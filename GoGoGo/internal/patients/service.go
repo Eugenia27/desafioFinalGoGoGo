@@ -8,6 +8,8 @@ type Repository interface {
 }
 
 // Service provides all functionalities related to products.
+
+/*
 type Service struct {
 	repository Repository
 }
@@ -23,3 +25,4 @@ func (s *Service) GetByID(id int) (Product, error) {
 func (s *Service) ModifyByID(id int, product Product) (Product, error) {
 	return s.repository.Modify(id, product)
 }
+*/

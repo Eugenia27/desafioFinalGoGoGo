@@ -1,7 +1,7 @@
 package database
 
 import (
-	"awesomeProject3/internal/products"
+	"GoGoGo/internal/products"
 	"database/sql"
 	"fmt"
 )
