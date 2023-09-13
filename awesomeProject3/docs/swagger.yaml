@@ -1,0 +1,53 @@
+definitions:
+  products.Product:
+    properties:
+      code_value:
+        type: string
+      expiration:
+        type: string
+      id:
+        type: integer
+      is_published:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+    required:
+    - expiration
+    - price
+    type: object
+info:
+  contact:
+    name: API Support
+    url: https://developers.ctd.com.ar/support
+  description: This API Handle Products.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://developers.ctd.com.ar/es_ar/terminos-y-condiciones
+  title: Certified Tech Developer
+  version: "1.0"
+paths:
+  /products/{id}:
+    get:
+      description: Gets a product by id from the repository
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Product'
+      summary: Gets a product by id
+      tags:
+      - products
+swagger: "2.0"
