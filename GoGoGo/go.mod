@@ -1,4 +1,4 @@
-module awesomeProject3
+module GoGoGo
 
 go 1.19
 
