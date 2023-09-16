@@ -12,7 +12,7 @@ import (
 	//"net/http"
 	//"os"
 
-	//"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	//"github.com/joho/godotenv"
 	//swaggerFiles "github.com/swaggo/files"
 	//ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,7 +32,6 @@ import (
 func main() {
 	fmt.Println("hola database")
 
-	//db, err := sql.Open("mysql", "user:password@tcp(localhost:3309)/finalGogogo")
 	db, err := database.Init()
 	fmt.Println("sql Open")
 	if err != nil {
@@ -51,6 +50,18 @@ func main() {
 	}
 	fmt.Println("hola database")
 
+	router := gin.Default()
+
+	router.GET("/belu", func(c *gin.Context){
+		c.JSON(200,gin.H{"massage":"Hola Belu"})
+	})
+
+
+	err = router.Run()
+
+	if err != nil {
+		panic(err)
+	}
 
 /* 	env := os.Getenv("ENV")
 	if env == "" {
