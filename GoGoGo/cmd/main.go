@@ -6,9 +6,9 @@ import (
 	"fmt"
 	//"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
-	//"GoGoGo/cmd/server/handler"
+	"GoGoGo/cmd/server/handler"
 	//"GoGoGo/cmd/server/middlewares"
-	//"GoGoGo/internal/products"
+	"GoGoGo/internal/dentists"
 	//"net/http"
 	//"os"
 
@@ -55,6 +55,15 @@ func main() {
 	router.GET("/belu", func(c *gin.Context){
 		c.JSON(200,gin.H{"massage":"Hola Belu"})
 	})
+
+	myDatabase := database.NewDatabase(db)
+
+	dentistsService := dentists.NewService(myDatabase)
+
+
+	dentistsHandler := handler.NewDentistsHandler(dentistsService)
+
+	router.GET("/dentists/:id", dentistsHandler.GetDentistByID )
 
 
 	err = router.Run()
