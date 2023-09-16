@@ -57,15 +57,15 @@ func (s *SqlStore) Save(dentist dentists.Dentist) (dentists.Dentist, error) {
 	return dentist, nil
 }
 
-// func (s *SqlStore) Delete(id int) error {
-// 	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
-// 	_, err := s.DB.Exec(query)
-// 	if err != nil {
-// 		return err
-// 	}
+func (s *SqlStore) Delete(id int) error {
+	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
+	_, err := s.DB.Exec(query)
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
 /* func (s *SqlStore) GetByID(id int) (products.Product, error) {
 	var productReturn products.Product

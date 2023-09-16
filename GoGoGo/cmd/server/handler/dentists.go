@@ -18,15 +18,22 @@ type DentistCreator interface {
 	Save(dentist dentists.Dentist) (dentists.Dentist, error)
 }
 
+type DentistDelete interface {
+	//ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error)
+	Delete(id int) error
+}
+
 type DentistsHandler struct {
 	dentistsGetter  DentistGetter
 	dentistsCreator DentistCreator
+	dentistDelete   DentistDelete
 }
 
-func NewDentistsHandler(getter DentistGetter, creator DentistCreator) *DentistsHandler {
+func NewDentistsHandler(getter DentistGetter, creator DentistCreator, delete DentistDelete) *DentistsHandler {
 	return &DentistsHandler{
 		dentistsGetter:  getter,
 		dentistsCreator: creator,
+		dentistDelete:   delete,
 	}
 }
 
@@ -80,6 +87,30 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, dentist)
+}
+
+func (ph *DentistsHandler) DeleteDentist(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	_, err = ph.dentistsGetter.GetByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "dentist not found"})
+		return
+	}
+
+	deleted := ph.dentistDelete.Delete(id)
+	if deleted != nil {
+		ctx.JSON(404, gin.H{"error": "delete failed"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "dentist deleted"})
+	return
 }
 
 // func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {

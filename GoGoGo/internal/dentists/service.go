@@ -3,12 +3,11 @@ package dentists
 // Repository is an interface that we used to indicate to some user how to implement
 // a repository for products.
 
-
 type Repository interface {
-	Save(dentist Dentist)(Dentist, error)
+	Save(dentist Dentist) (Dentist, error)
 	GetByID(id int) (Dentist, error)
 	//Modify(id int, dentist Dentist) (Dentist, error)
-	//Delete(id int)(error)
+	Delete(id int) error
 }
 
 // Service provides all functionalities related to dentist.
@@ -32,6 +31,6 @@ func (s *Service) GetByID(id int) (Dentist, error) {
 // 	return s.repository.Modify(id, dentist)
 // }
 
-// func (s *Service) Delete(id int)(error) {
-// 	return s.repository.Delete(id)
-// }
+func (s *Service) Delete(id int) error {
+	return s.repository.Delete(id)
+}
