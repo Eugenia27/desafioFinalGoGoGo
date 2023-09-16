@@ -2,6 +2,7 @@ package handler
 
 import (
 	"GoGoGo/internal/dentists"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,19 +13,20 @@ type DentistGetter interface {
 	GetByID(id int) (dentists.Dentist, error)
 }
 
-// type DentistCreator interface {
-// 	ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error)
-// }
+type DentistCreator interface {
+	//ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error)
+	Save(dentist dentists.Dentist) (dentists.Dentist, error)
+}
 
 type DentistsHandler struct {
 	dentistsGetter  DentistGetter
-	//dentistsCreator DentistCreator
+	dentistsCreator DentistCreator
 }
 
-func NewDentistsHandler(getter DentistGetter) *DentistsHandler {
+func NewDentistsHandler(getter DentistGetter, creator DentistCreator) *DentistsHandler {
 	return &DentistsHandler{
 		dentistsGetter:  getter,
-		//dentistsCreator: creator,
+		dentistsCreator: creator,
 	}
 }
 
@@ -55,6 +57,28 @@ func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "dentist not found"})
 		return
 	}
+	ctx.JSON(http.StatusOK, dentist)
+}
+
+func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
+
+	dentistRequest := dentists.Dentist{}
+
+	err := ctx.BindJSON(&dentistRequest)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println(dentistRequest)
+
+	dentist, err := ph.dentistsCreator.Save(dentistRequest)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "internal error"})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, dentist)
 }
 

@@ -14,7 +14,7 @@ func NewDatabase(db *sql.DB) *SqlStore {
 	return &SqlStore{db}
 }
 
-func (s *SqlStore) GetByID(id int) (dentists.Dentist, error){
+func (s *SqlStore) GetByID(id int) (dentists.Dentist, error) {
 	var dentistReturn dentists.Dentist
 
 	query := fmt.Sprintf("SELECT * FROM Dentists WHERE idDentist = %d;", id)
@@ -39,19 +39,23 @@ func (s *SqlStore) GetByID(id int) (dentists.Dentist, error){
 // 	}
 
 // 	return dentist, nil
-// } 
-
-// func (s *SqlStore) Save(dentist Dentist) (Dentist, error) {
-// 	query := "INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
-// 	var idDentist int
-// 	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Dentist)
-// 	if err != nil {
-// 		return Dentist{}, err
-// 	}
-
-// 	dentist.Dentist = Dentist
-// 	return dentist, nil
 // }
+
+func (s *SqlStore) Save(dentist dentists.Dentist) (dentists.Dentist, error) {
+	query := fmt.Sprintf("INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ( ?, ?, ?);")
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return dentists.Dentist{}, err
+	}
+
+	result, err := stmt.Exec(dentist.LastName, dentist.FirstName, dentist.RegistrationNumber)
+	if err != nil {
+		return dentists.Dentist{}, err
+	}
+	insertedId, _ := result.LastInsertId()
+	dentist.DentistID = int(insertedId)
+	return dentist, nil
+}
 
 // func (s *SqlStore) Delete(id int) error {
 // 	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
