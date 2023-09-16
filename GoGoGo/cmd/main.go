@@ -7,8 +7,11 @@ import (
 	//"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
 	"GoGoGo/cmd/server/handler"
+
 	//"GoGoGo/cmd/server/middlewares"
 	"GoGoGo/internal/dentists"
+	"GoGoGo/internal/patients"
+
 	//"net/http"
 	//"os"
 
@@ -41,7 +44,7 @@ func main() {
 
 	if err != nil {
 		panic(err)
-	} 
+	}
 
 	err = db.Ping()
 
@@ -52,85 +55,86 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/belu", func(c *gin.Context){
-		c.JSON(200,gin.H{"massage":"Hola Belu"})
+	router.GET("/belu", func(c *gin.Context) {
+		c.JSON(200, gin.H{"massage": "Hola Belu"})
 	})
 
-	myDatabase := database.NewDatabase(db)
+	dentistRepository := database.NewDentistRepository(db)
+	patientRepository := database.NewPatientRepository(db)
 
-	dentistsService := dentists.NewService(myDatabase)
-
-
+	dentistsService := dentists.NewService(dentistRepository)
 	dentistsHandler := handler.NewDentistsHandler(dentistsService)
+	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
 
-	router.GET("/dentists/:id", dentistsHandler.GetDentistByID )
-
-
-	err = router.Run()
-
-	if err != nil {
-		panic(err)
-	}
-
-/* 	env := os.Getenv("ENV")
-	if env == "" {
-		env = "local"
-	}
-
-	if env == "local" {
-		err := godotenv.Load()
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	cfg, err := config.NewConfig(env)
-
-	if err != nil {
-		panic(err)
-	}
-
-	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
-
-	router := gin.New()
-
-	customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
-
-	router.Use(customRecovery)
-
-	// docs endpoint
-	docs.SwaggerInfo.Host = os.Getenv("HOST")
-	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	router.GET("/ping", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{"ok": "ok"})
-	})
-
-	postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
-		cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
-		cfg.PublicConfig.PostgresDatabase)
-
-	if err != nil {
-		panic(err)
-	}
-
-
-	myDatabase := database.NewDatabase(postgresDatabase)
-
-	productsService := products.NewService(myDatabase)
-
-	productsHandler := handler.NewProductsHandler(productsService, productsService)
-
-	productsGroup := router.Group("/products")
-
-	productsGroup.GET("/:id", productsHandler.GetProductByID)
-
-	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct) 
+	patientsService := patients.NewService(patientRepository)
+	patientsHandler := handler.NewPatientsHandler(patientsService)
+	router.GET("/patients/:id", patientsHandler.GetPatientByID)
 
 	err = router.Run()
 
 	if err != nil {
 		panic(err)
 	}
+
+	/* 	env := os.Getenv("ENV")
+	   	if env == "" {
+	   		env = "local"
+	   	}
+
+	   	if env == "local" {
+	   		err := godotenv.Load()
+	   		if err != nil {
+	   			panic(err)
+	   		}
+	   	}
+
+	   	cfg, err := config.NewConfig(env)
+
+	   	if err != nil {
+	   		panic(err)
+	   	}
+
+	   	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
+
+	   	router := gin.New()
+
+	   	customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
+
+	   	router.Use(customRecovery)
+
+	   	// docs endpoint
+	   	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	   	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	   	router.GET("/ping", func(context *gin.Context) {
+	   		context.JSON(http.StatusOK, gin.H{"ok": "ok"})
+	   	})
+
+	   	postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
+	   		cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
+	   		cfg.PublicConfig.PostgresDatabase)
+
+	   	if err != nil {
+	   		panic(err)
+	   	}
+
+
+	   	myDatabase := database.NewDatabase(postgresDatabase)
+
+	   	productsService := products.NewService(myDatabase)
+
+	   	productsHandler := handler.NewProductsHandler(productsService, productsService)
+
+	   	productsGroup := router.Group("/products")
+
+	   	productsGroup.GET("/:id", productsHandler.GetProductByID)
+
+	   	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
+
+	   	err = router.Run()
+
+	   	if err != nil {
+	   		panic(err)
+	   	}
 	*/
 }

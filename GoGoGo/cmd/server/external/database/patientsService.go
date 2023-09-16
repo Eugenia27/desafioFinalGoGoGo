@@ -1,60 +1,65 @@
 package database
 
 import (
-	"GoGoGo/internal/dentists"
+	"GoGoGo/internal/patients"
 	"database/sql"
 	"fmt"
 )
 
-type DentistRepository struct {
+type PatientRepository struct {
 	*sql.DB
 }
 
-func NewDentistRepository(db *sql.DB) *DentistRepository {
-	return &DentistRepository{db}
+func NewPatientRepository(db *sql.DB) *PatientRepository {
+	return &PatientRepository{db}
 }
 
-func (s *DentistRepository) GetByID(id int) (dentists.Dentist, error) {
-	var dentistReturn dentists.Dentist
+func (s *PatientRepository) GetByID(id int) (patients.Patient, error) {
+	var patientReturn patients.Patient
 
-	query := fmt.Sprintf("SELECT * FROM Dentists WHERE idDentist = %d;", id)
+	query := fmt.Sprintf("SELECT * FROM Patients WHERE idPatient = %d;", id)
 	row := s.DB.QueryRow(query)
-	err := row.Scan(&dentistReturn.DentistID, &dentistReturn.LastName, &dentistReturn.FirstName, &dentistReturn.RegistrationNumber)
+	err := row.Scan(&patientReturn.PatientID,
+		&patientReturn.FirstName,
+		&patientReturn.LastName,
+		&patientReturn.Address,
+		&patientReturn.CredentialID,
+		&patientReturn.DischargeDate)
 	if err != nil {
-		return dentists.Dentist{}, err
+		return patients.Patient{}, err
 	}
-	return dentistReturn, nil
+	return patientReturn, nil
 }
 
-// func (s *SqlStore) Modify(id int, dentist dentists.Denstist) (dentists.Dentist, error) {
-// 	query := fmt.Sprintf("UPDATE Dentists SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", dentist.LastName, dentist.FirstName, dentist.RegistrationNumber, dentist.idDenstist)
+// func (s *SqlStore) Modify(id int, dentist patients.Denstist) (patients.Patient, error) {
+// 	query := fmt.Sprintf("UPDATE Patients SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", dentist.LastName, dentist.FirstName, dentist.RegistrationNumber, dentist.idDenstist)
 // 	stmt, err := s.DB.Prepare(query)
 // 	if err != nil {
-// 		return dentists.Dentist{}, err
+// 		return patients.Patient{}, err
 // 	}
 
 // 	_, err = stmt.Exec()
 // 	if err != nil {
-// 		return dentists.Dentist{}, err
+// 		return patients.Patient{}, err
 // 	}
 
 // 	return dentist, nil
 // }
 
-// func (s *SqlStore) Save(dentist Dentist) (Dentist, error) {
-// 	query := "INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
-// 	var idDentist int
-// 	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Dentist)
+// func (s *SqlStore) Save(dentist Patient) (Patient, error) {
+// 	query := "INSERT INTO Patients (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
+// 	var idPatient int
+// 	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Patient)
 // 	if err != nil {
-// 		return Dentist{}, err
+// 		return Patient{}, err
 // 	}
 
-// 	dentist.Dentist = Dentist
+// 	dentist.Patient = Patient
 // 	return dentist, nil
 // }
 
 // func (s *SqlStore) Delete(id int) error {
-// 	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
+// 	query := fmt.Sprintf("DELETE FROM Patients WHERE idPatient = %d;", id)
 // 	_, err := s.DB.Exec(query)
 // 	if err != nil {
 // 		return err
