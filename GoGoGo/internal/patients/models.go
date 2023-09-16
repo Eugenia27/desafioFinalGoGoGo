@@ -1,10 +1,12 @@
 package patients
 
+import "time"
+
 type Patient struct {
-	ID            int    `json:"id"`
-	Name          string `json:"name"`
-	LastName      string `json:"last_name"`
-	Address       int    `json:"address" `
-	IdCredential  string `json:"code_value"`
-	DischargeDate bool   `json:"discharge_date"`
+	IDPatient     int       `json:"idPatient"`
+	FirstName     string    `json:"first_name"`
+	LastName      string    `json:"last_name"`
+	Address       string    `json:"address" `
+	CredentialID  string    `json:"credential_id"`
+	DischargeDate time.Time `json:"discharge_date"`
 }

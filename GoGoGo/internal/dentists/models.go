@@ -1,8 +1,8 @@
 package dentists
 
 type Dentist struct {
-	ID                 int    `json:"id"`
+	IDDentist          int    `json:"idDentist"`
 	LastName           string `json:"last_name"`
-	Name               string `json:"name"`
+	FirstName          string `json:"first_name"`
 	RegistrationNumber int    `json:"registration_number" `
 }

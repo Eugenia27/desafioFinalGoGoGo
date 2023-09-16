@@ -1,11 +1,11 @@
 package appointments
 
+import "time"
+
 type Appointment struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Quantity    int     `json:"quantity" `
-	CodeValue   string  `json:"code_value"`
-	IsPublished bool    `json:"is_published"`
-	Expiration  string  `json:"expiration" binding:"required"`
-	Price       float64 `json:"price" binding:"required"`
+	IDAppointments   int       `json:"idAppointments"`
+	Date             time.Time `json:"date"`
+	Notes            string    `json:"quantity" `
+	DentistIdDentist int       `json:"Dentist_idDentist"`
+	PatientIdPatient int       `json:"Patient_idPatient"`
 }
