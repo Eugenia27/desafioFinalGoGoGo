@@ -67,32 +67,17 @@ func (s *SqlStore) Delete(id int) error {
 	return nil
 }
 
-/* func (s *SqlStore) GetByID(id int) (products.Product, error) {
-	var productReturn products.Product
-
-	query := fmt.Sprintf("SELECT * FROM products WHERE id = %d;", id)
-	row := s.DB.QueryRow(query)
-	err := row.Scan(&productReturn.ID, &productReturn.Name, &productReturn.Quantity, &productReturn.CodeValue,
-		&productReturn.IsPublished, &productReturn.Expiration, &productReturn.Price)
-	if err != nil {
-		return products.Product{}, err
-	}
-	return productReturn, nil
-}
-
-func (s *SqlStore) Modify(id int, product products.Product) (products.Product, error) {
-	query := fmt.Sprintf("UPDATE products SET name = '%s', quantity = %v, code_value = '%s',"+
-		" is_published = %v, expiration = '%s', price = %v WHERE id = %v;", product.Name, product.Quantity,
-		product.CodeValue, product.IsPublished, product.Expiration, product.Price, product.ID)
+func (s *SqlStore) ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error) {
+	query := fmt.Sprintf("UPDATE Dentists SET first_name = ?, last_name = ?, registration_number = ? WHERE idDentist = ?;")
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		return products.Product{}, err
+		return dentists.Dentist{}, err
 	}
-
-	_, err = stmt.Exec()
+	fmt.Println(query)
+	_, err = stmt.Exec(dentist.FirstName, dentist.LastName, dentist.RegistrationNumber, id)
 	if err != nil {
-		return products.Product{}, err
+		return dentists.Dentist{}, err
 	}
 
-	return product, nil
-} */
+	return dentist, nil
+}

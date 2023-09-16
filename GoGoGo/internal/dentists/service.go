@@ -6,7 +6,7 @@ package dentists
 type Repository interface {
 	Save(dentist Dentist) (Dentist, error)
 	GetByID(id int) (Dentist, error)
-	//Modify(id int, dentist Dentist) (Dentist, error)
+	ModifyByID(id int, dentist Dentist) (Dentist, error)
 	Delete(id int) error
 }
 
@@ -27,9 +27,9 @@ func (s *Service) GetByID(id int) (Dentist, error) {
 	return s.repository.GetByID(id)
 }
 
-// func (s *Service) ModifyByID(id int, dentist Dentist) (Dentist, error) {
-// 	return s.repository.Modify(id, dentist)
-// }
+func (s *Service) ModifyByID(id int, dentist Dentist) (Dentist, error) {
+	return s.repository.ModifyByID(id, dentist)
+}
 
 func (s *Service) Delete(id int) error {
 	return s.repository.Delete(id)

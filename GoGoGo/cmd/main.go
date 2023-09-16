@@ -61,10 +61,11 @@ func main() {
 
 	dentistsService := dentists.NewService(myDatabase)
 
-	dentistsHandler := handler.NewDentistsHandler(dentistsService, dentistsService, dentistsService)
+	dentistsHandler := handler.NewDentistsHandler(dentistsService, dentistsService, dentistsService, dentistsService)
 
-	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
 	router.POST("/dentists", dentistsHandler.PostDentist)
+	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
+	router.PUT("/dentists/:id", dentistsHandler.PutDentist)
 	router.DELETE("/dentists/:id", dentistsHandler.DeleteDentist)
 
 	err = router.Run()
