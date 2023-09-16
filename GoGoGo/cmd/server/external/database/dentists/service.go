@@ -40,7 +40,7 @@ func (s *SqlStore) Modify(id int, dentist dentists.Denstist) (dentists.Dentist, 
 	return dentist, nil
 } 
 
-func (s *SqlStore) Create(dentist Dentist) (Dentist, error) {
+func (s *SqlStore) Save(dentist Dentist) (Dentist, error) {
 	query := "INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
 	var idDentist int
 	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Dentist)

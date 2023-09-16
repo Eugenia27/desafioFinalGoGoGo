@@ -1,19 +1,22 @@
 package main
 
 import (
-	"GoGoGo/cmd/server/config"
+	// "database/sql"
+	// _ "github.com/go-sql-driver/mysql"
+	"fmt"
+	//"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
-	"GoGoGo/cmd/server/handler"
-	"GoGoGo/cmd/server/middlewares"
-	"GoGoGo/internal/products"
-	"net/http"
-	"os"
+	//"GoGoGo/cmd/server/handler"
+	//"GoGoGo/cmd/server/middlewares"
+	//"GoGoGo/internal/products"
+	//"net/http"
+	//"os"
 
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/swag/example/basic/docs"
+	//"github.com/gin-gonic/gin"
+	//"github.com/joho/godotenv"
+	//swaggerFiles "github.com/swaggo/files"
+	//ginSwagger "github.com/swaggo/gin-swagger"
+	//"github.com/swaggo/swag/example/basic/docs"
 )
 
 // @title Certified Tech Developer
@@ -27,8 +30,29 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
+	fmt.Println("hola database")
 
-	env := os.Getenv("ENV")
+	//db, err := sql.Open("mysql", "user:password@tcp(localhost:3309)/finalGogogo")
+	db, err := database.Init()
+	fmt.Println("sql Open")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("hola database")
+
+	if err != nil {
+		panic(err)
+	} 
+
+	err = db.Ping()
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("hola database")
+
+
+/* 	env := os.Getenv("ENV")
 	if env == "" {
 		env = "local"
 	}
@@ -70,6 +94,7 @@ func main() {
 		panic(err)
 	}
 
+
 	myDatabase := database.NewDatabase(postgresDatabase)
 
 	productsService := products.NewService(myDatabase)
@@ -80,11 +105,12 @@ func main() {
 
 	productsGroup.GET("/:id", productsHandler.GetProductByID)
 
-	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
+	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct) 
 
 	err = router.Run()
 
 	if err != nil {
 		panic(err)
 	}
+	*/
 }
