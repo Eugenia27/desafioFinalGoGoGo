@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"awesomeProject3/internal/products"
-	"github.com/gin-gonic/gin"
+	"GoGoGo/internal/products"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ProductsGetter interface {

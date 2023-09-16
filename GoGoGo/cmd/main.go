@@ -1,18 +1,19 @@
 package main
 
 import (
-	"awesomeProject3/cmd/server/config"
-	"awesomeProject3/cmd/server/external/database"
-	"awesomeProject3/cmd/server/handler"
-	"awesomeProject3/cmd/server/middlewares"
-	"awesomeProject3/internal/products"
+	"GoGoGo/cmd/server/config"
+	"GoGoGo/cmd/server/external/database"
+	"GoGoGo/cmd/server/handler"
+	"GoGoGo/cmd/server/middlewares"
+	"GoGoGo/internal/products"
+	"net/http"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/swag/example/basic/docs"
-	"net/http"
-	"os"
 )
 
 // @title Certified Tech Developer
