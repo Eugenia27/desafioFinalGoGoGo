@@ -14,7 +14,55 @@ func NewDatabase(db *sql.DB) *SqlStore {
 	return &SqlStore{db}
 }
 
-func (s *SqlStore) GetByID(id int) (products.Product, error) {
+func (s *SqlStore) GetByID(id int) (dentist.dentist, error){
+	var dentistReturn dentists.dentist
+
+	query := fmt.Sprintf("SELECT * FROM Dentists WHERE idDentist = %d;", id)
+	row := s.DB.QueryRow(query)
+	err := row.Scan(&dentistReturn.DenstistID, &dentistReturn.LastName, &dentistReturn.FirstName, &dentistReturn.RegistrationNumber)
+	if err != nil {
+		return dentists.dentsit{}, err
+	}
+}
+
+func (s *SqlStore) Modify(id int, dentist dentists.Denstist) (dentists.Dentist, error) {
+	query := fmt.Sprintf("UPDATE Dentists SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", dentist.LastName, dentist.FirstName, dentist.RegistrationNumber, dentist.idDenstist)
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return dentists.Dentist{}, err
+	}
+
+	_, err = stmt.Exec()
+	if err != nil {
+		return dentists.Dentist{}, err
+	}
+
+	return dentist, nil
+} 
+
+func (s *SqlStore) Create(dentist Dentist) (Dentist, error) {
+	query := "INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
+	var idDentist int
+	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Dentist)
+	if err != nil {
+		return Dentist{}, err
+	}
+
+	dentist.Dentist = Dentist
+	return dentist, nil
+}
+
+func (s *SqlStore) Delete(id int) error {
+	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
+	_, err := s.DB.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* func (s *SqlStore) GetByID(id int) (products.Product, error) {
 	var productReturn products.Product
 
 	query := fmt.Sprintf("SELECT * FROM products WHERE id = %d;", id)
@@ -42,4 +90,4 @@ func (s *SqlStore) Modify(id int, product products.Product) (products.Product, e
 	}
 
 	return product, nil
-}
+} */
