@@ -78,6 +78,7 @@ func (s *SqlStore) ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentis
 	if err != nil {
 		return dentists.Dentist{}, err
 	}
+	dentist.DentistID = id
 
 	return dentist, nil
 }

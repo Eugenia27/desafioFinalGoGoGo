@@ -66,6 +66,7 @@ func main() {
 	router.POST("/dentists", dentistsHandler.PostDentist)
 	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
 	router.PUT("/dentists/:id", dentistsHandler.PutDentist)
+	router.PATCH("/dentists/:id", dentistsHandler.PatchDentist)
 	router.DELETE("/dentists/:id", dentistsHandler.DeleteDentist)
 
 	err = router.Run()
