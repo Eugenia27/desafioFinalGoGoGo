@@ -32,21 +32,6 @@ func (s *PatientRepository) GetByID(id int) (patients.Patient, error) {
 	return patientReturn, nil
 }
 
-// func (s *PatientRepository) Modify(id int, Patient patients.Denstist) (patients.Patient, error) {
-// 	query := fmt.Sprintf("UPDATE patients SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", Patient.LastName, Patient.FirstName, Patient.RegistrationNumber, Patient.idDenstist)
-// 	stmt, err := s.DB.Prepare(query)
-// 	if err != nil {
-// 		return patients.Patient{}, err
-// 	}
-
-// 	_, err = stmt.Exec()
-// 	if err != nil {
-// 		return patients.Patient{}, err
-// 	}
-
-// 	return Patient, nil
-// }
-
 func (s *PatientRepository) Save(patient patients.Patient) (patients.Patient, error) {
 	query := fmt.Sprintf("INSERT INTO Patients (first_name, last_name, address, credential_id, discharge_date) VALUES ( ?, ?, ?, ?, ?);")
 	stmt, err := s.DB.Prepare(query)
