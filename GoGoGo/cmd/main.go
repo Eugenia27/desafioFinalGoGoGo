@@ -67,8 +67,13 @@ func main() {
 	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
 
 	patientsService := patients.NewService(patientRepository)
-	patientsHandler := handler.NewPatientsHandler(patientsService)
-	router.GET("/patients/:id", patientsHandler.GetPatientByID)
+	patientsHandler := handler.NewPatientsHandler(patientsService, patientsService, patientsService, patientsService)
+	patientGroup := router.Group("/patients")
+	patientGroup.POST("/", patientsHandler.PostPatient)
+	patientGroup.GET("/:id", patientsHandler.GetPatientByID)
+	patientGroup.PUT("/:id", patientsHandler.PutPatient)
+	patientGroup.PATCH("/:id", patientsHandler.PatchPatient)
+	patientGroup.DELETE("/:id", patientsHandler.DeletePatient)
 
 	err = router.Run()
 

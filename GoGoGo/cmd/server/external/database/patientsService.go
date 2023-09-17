@@ -28,11 +28,12 @@ func (s *PatientRepository) GetByID(id int) (patients.Patient, error) {
 	if err != nil {
 		return patients.Patient{}, err
 	}
+
 	return patientReturn, nil
 }
 
-// func (s *SqlStore) Modify(id int, dentist patients.Denstist) (patients.Patient, error) {
-// 	query := fmt.Sprintf("UPDATE Patients SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", dentist.LastName, dentist.FirstName, dentist.RegistrationNumber, dentist.idDenstist)
+// func (s *PatientRepository) Modify(id int, Patient patients.Denstist) (patients.Patient, error) {
+// 	query := fmt.Sprintf("UPDATE patients SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", Patient.LastName, Patient.FirstName, Patient.RegistrationNumber, Patient.idDenstist)
 // 	stmt, err := s.DB.Prepare(query)
 // 	if err != nil {
 // 		return patients.Patient{}, err
@@ -43,57 +44,48 @@ func (s *PatientRepository) GetByID(id int) (patients.Patient, error) {
 // 		return patients.Patient{}, err
 // 	}
 
-// 	return dentist, nil
+// 	return Patient, nil
 // }
 
-// func (s *SqlStore) Save(dentist Patient) (Patient, error) {
-// 	query := "INSERT INTO Patients (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
-// 	var idPatient int
-// 	err := s.DB.QueryRow(query, dentist.LastName, dentist.FirstName, dentist.RegistrationNumber).Scan(&Patient)
-// 	if err != nil {
-// 		return Patient{}, err
-// 	}
-
-// 	dentist.Patient = Patient
-// 	return dentist, nil
-// }
-
-// func (s *SqlStore) Delete(id int) error {
-// 	query := fmt.Sprintf("DELETE FROM Patients WHERE idPatient = %d;", id)
-// 	_, err := s.DB.Exec(query)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-/* func (s *SqlStore) GetByID(id int) (products.Product, error) {
-	var productReturn products.Product
-
-	query := fmt.Sprintf("SELECT * FROM products WHERE id = %d;", id)
-	row := s.DB.QueryRow(query)
-	err := row.Scan(&productReturn.ID, &productReturn.Name, &productReturn.Quantity, &productReturn.CodeValue,
-		&productReturn.IsPublished, &productReturn.Expiration, &productReturn.Price)
-	if err != nil {
-		return products.Product{}, err
-	}
-	return productReturn, nil
-}
-
-func (s *SqlStore) Modify(id int, product products.Product) (products.Product, error) {
-	query := fmt.Sprintf("UPDATE products SET name = '%s', quantity = %v, code_value = '%s',"+
-		" is_published = %v, expiration = '%s', price = %v WHERE id = %v;", product.Name, product.Quantity,
-		product.CodeValue, product.IsPublished, product.Expiration, product.Price, product.ID)
+func (s *PatientRepository) Save(patient patients.Patient) (patients.Patient, error) {
+	query := fmt.Sprintf("INSERT INTO Patients (first_name, last_name, address, credential_id, discharge_date) VALUES ( ?, ?, ?, ?, ?);")
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		return products.Product{}, err
+		return patients.Patient{}, err
 	}
 
-	_, err = stmt.Exec()
+	result, err := stmt.Exec(patient.FirstName, patient.LastName, patient.Address, patient.CredentialID, patient.DischargeDate)
 	if err != nil {
-		return products.Product{}, err
+		return patients.Patient{}, err
+	}
+	insertedId, _ := result.LastInsertId()
+	patient.PatientID = int(insertedId)
+
+	return patient, nil
+}
+
+func (s *PatientRepository) Delete(id int) error {
+	query := fmt.Sprintf("DELETE FROM Patients WHERE idPatient = %d;", id)
+	_, err := s.DB.Exec(query)
+	if err != nil {
+		return err
 	}
 
-	return product, nil
-} */
+	return nil
+}
+
+func (s *PatientRepository) ModifyByID(id int, patient patients.Patient) (patients.Patient, error) {
+	query := fmt.Sprintf("UPDATE Patients SET first_name = ?, last_name = ?, address = ?, credential_id = ?, discharge_date = ?  WHERE idPatient = ?;")
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return patients.Patient{}, err
+	}
+	fmt.Println(query)
+	_, err = stmt.Exec(patient.FirstName, patient.LastName, patient.Address, patient.CredentialID, patient.DischargeDate, id)
+	if err != nil {
+		return patients.Patient{}, err
+	}
+	patient.PatientID = id
+
+	return patient, nil
+}

@@ -4,8 +4,10 @@ package patients
 // a repository for products.
 
 type Repository interface {
+	Save(patient Patient) (Patient, error)
 	GetByID(id int) (Patient, error)
-	//Modify(id int, patient Patient) (Patient, error)
+	ModifyByID(id int, patient Patient) (Patient, error)
+	Delete(id int) error
 }
 
 // Service provides all functionalities related to products.
@@ -18,10 +20,18 @@ func NewService(repository Repository) *Service {
 	return &Service{repository: repository}
 }
 
+func (s *Service) Save(patient Patient) (Patient, error) {
+	return s.repository.Save(patient)
+}
+
 func (s *Service) GetByID(id int) (Patient, error) {
 	return s.repository.GetByID(id)
 }
 
-//func (s *Service) ModifyByID(id int, patient Patient) (Patient, error) {
-//	return s.repository.Modify(id, patient)
-//}
+func (s *Service) ModifyByID(id int, patient Patient) (Patient, error) {
+	return s.repository.ModifyByID(id, patient)
+}
+
+func (s *Service) Delete(id int) error {
+	return s.repository.Delete(id)
+}
