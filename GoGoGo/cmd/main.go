@@ -10,8 +10,10 @@ import (
 
 	//"GoGoGo/cmd/server/middlewares"
 	"GoGoGo/internal/dentists"
+	"GoGoGo/internal/patients"
+
 	//"net/http"
-	//"os"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	//"github.com/joho/godotenv"
@@ -31,51 +33,51 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
-	fmt.Println("hola database")
 
 	db, err := database.Init()
 	fmt.Println("sql Open")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("hola database")
 
-	if err != nil {
-		panic(err)
-	}
 
 	err = db.Ping()
-
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("hola database")
 
 	router := gin.Default()
 
-	router.GET("/belu", func(c *gin.Context) {
-		c.JSON(200, gin.H{"massage": "Hola Belu"})
-	})
 
-	myDatabase := database.NewDatabase(db)
+	dentistRepository := database.NewDentistRepository(db)
+	patientRepository := database.NewPatientRepository(db)
 
-	dentistsService := dentists.NewService(myDatabase)
-
-	dentistsHandler := handler.NewDentistsHandler(dentistsService, dentistsService, dentistsService, dentistsService)
-
+	dentistsService := dentists.NewService(dentistRepository)
+	dentistsHandler := handler.NewDentistsHandler(dentistsService)
 	dentistGroup := router.Group("/dentists")
-
 	dentistGroup.POST("/", dentistsHandler.PostDentist)
 	dentistGroup.GET("/:id", dentistsHandler.GetDentistByID)
 	dentistGroup.PUT("/:id", dentistsHandler.PutDentist)
 	dentistGroup.PATCH("/:id", dentistsHandler.PatchDentist)
 	dentistGroup.DELETE("/:id", dentistsHandler.DeleteDentist)
 
-	err = router.Run()
+  
+  
+	patientsService := patients.NewService(patientRepository)
+	patientsHandler := handler.NewPatientsHandler(patientsService, patientsService, patientsService, patientsService)
+	patientGroup := router.Group("/patients")
+	patientGroup.POST("/", patientsHandler.PostPatient)
+	patientGroup.GET("/:id", patientsHandler.GetPatientByID)
+	patientGroup.PUT("/:id", patientsHandler.PutPatient)
+	patientGroup.PATCH("/:id", patientsHandler.PatchPatient)
+	patientGroup.DELETE("/:id", patientsHandler.DeletePatient)
 
+
+	err = router.Run()
 	if err != nil {
 		panic(err)
 	}
+
 
 	/* 	env := os.Getenv("ENV")
 	   	if env == "" {

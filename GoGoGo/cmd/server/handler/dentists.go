@@ -9,10 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 type DentistCreator interface {
 	Save(dentist dentists.Dentist) (dentists.Dentist, error)
 }
 type DentistGetter interface {
+
 	GetByID(id int) (dentists.Dentist, error)
 }
 
@@ -37,6 +39,7 @@ func NewDentistsHandler(creator DentistCreator, getter DentistGetter, update Den
 		dentistsCreator: creator,
 		dentistDelete:   delete,
 		dentistUpdate:   update,
+
 	}
 }
 
