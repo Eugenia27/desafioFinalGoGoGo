@@ -1,22 +1,21 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	// "database/sql"
 	// _ "github.com/go-sql-driver/mysql"
-	"fmt"
-	//"GoGoGo/cmd/server/config"
+	"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
 	"GoGoGo/cmd/server/handler"
-
-	//"GoGoGo/cmd/server/middlewares"
+	"GoGoGo/cmd/server/middlewares"
 	"GoGoGo/internal/dentists"
 	"GoGoGo/internal/patients"
 
 	//"net/http"
-	"os"
-
 	"github.com/gin-gonic/gin"
-	//"github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	//swaggerFiles "github.com/swaggo/files"
 	//ginSwagger "github.com/swaggo/gin-swagger"
 	//"github.com/swaggo/swag/example/basic/docs"
@@ -34,6 +33,13 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
 
+	godotenv.Load()
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "local"
+		fmt.Println("env load " + env)
+	}
+
 	db, err := database.Init()
 	fmt.Println("sql Open")
 	if err != nil {
@@ -44,6 +50,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// if env == "local" {
+	// 	err := godotenv.Load()
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// }
+
+	fmt.Println("HOLA")
+	cfg, err := config.NewConfig(env)
+	if err != nil {
+		panic(err)
+	}
+
+	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey) //, cfg.PrivateConfig.SecretKey)
 
 	router := gin.Default()
 
@@ -57,37 +78,18 @@ func main() {
 	patientsService := patients.NewService(patientRepository)
 	patientsHandler := handler.NewPatientsHandler(patientsService, patientsService, patientsService, patientsService)
 	patientGroup := router.Group("/patients")
-	patientGroup.POST("/", patientsHandler.PostPatient)
+	patientGroup.POST("/", authMidd.AuthHeader, patientsHandler.PostPatient)
 	patientGroup.GET("/:id", patientsHandler.GetPatientByID)
-	patientGroup.PUT("/:id", patientsHandler.PutPatient)
-	patientGroup.PATCH("/:id", patientsHandler.PatchPatient)
-	patientGroup.DELETE("/:id", patientsHandler.DeletePatient)
+	patientGroup.PUT("/:id", authMidd.AuthHeader, patientsHandler.PutPatient)
+	patientGroup.PATCH("/:id", authMidd.AuthHeader, patientsHandler.PatchPatient)
+	patientGroup.DELETE("/:id", authMidd.AuthHeader, patientsHandler.DeletePatient)
 
 	err = router.Run()
 	if err != nil {
 		panic(err)
 	}
 
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "local"
-	}
 	/*
-		if env == "local" {
-			err := godotenv.Load()
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		cfg, err := config.NewConfig(env)
-
-		if err != nil {
-			panic(err)
-		}
-
-		authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
-
 		router := gin.New()
 
 		customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
