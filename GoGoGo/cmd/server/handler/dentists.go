@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DentistGetter interface {
+type DentistsGetter interface {
 	GetByID(id int) (dentists.Dentist, error)
 }
 
@@ -17,13 +17,13 @@ type DentistGetter interface {
 // }
 
 type DentistsHandler struct {
-	dentistsGetter  DentistGetter
+	dentistsGetter DentistsGetter
 	//dentistsCreator DentistCreator
 }
 
-func NewDentistsHandler(getter DentistGetter) *DentistsHandler {
+func NewDentistsHandler(getter DentistsGetter) *DentistsHandler {
 	return &DentistsHandler{
-		dentistsGetter:  getter,
+		dentistsGetter: getter,
 		//dentistsCreator: creator,
 	}
 }

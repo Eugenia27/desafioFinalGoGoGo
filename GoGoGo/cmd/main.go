@@ -7,10 +7,13 @@ import (
 	//"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
 	"GoGoGo/cmd/server/handler"
+
 	//"GoGoGo/cmd/server/middlewares"
 	"GoGoGo/internal/dentists"
+	"GoGoGo/internal/patients"
+
 	//"net/http"
-	//"os"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	//"github.com/joho/godotenv"
@@ -30,107 +33,100 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
-	fmt.Println("hola database")
 
 	db, err := database.Init()
 	fmt.Println("sql Open")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("hola database")
-
-	if err != nil {
-		panic(err)
-	} 
 
 	err = db.Ping()
-
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("hola database")
 
 	router := gin.Default()
 
-	router.GET("/belu", func(c *gin.Context){
-		c.JSON(200,gin.H{"massage":"Hola Belu"})
-	})
+	dentistRepository := database.NewDentistRepository(db)
+	patientRepository := database.NewPatientRepository(db)
 
-	myDatabase := database.NewDatabase(db)
-
-	dentistsService := dentists.NewService(myDatabase)
-
-
+	dentistsService := dentists.NewService(dentistRepository)
 	dentistsHandler := handler.NewDentistsHandler(dentistsService)
+	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
 
-	router.GET("/dentists/:id", dentistsHandler.GetDentistByID )
-
+	patientsService := patients.NewService(patientRepository)
+	patientsHandler := handler.NewPatientsHandler(patientsService, patientsService, patientsService, patientsService)
+	patientGroup := router.Group("/patients")
+	patientGroup.POST("/", patientsHandler.PostPatient)
+	patientGroup.GET("/:id", patientsHandler.GetPatientByID)
+	patientGroup.PUT("/:id", patientsHandler.PutPatient)
+	patientGroup.PATCH("/:id", patientsHandler.PatchPatient)
+	patientGroup.DELETE("/:id", patientsHandler.DeletePatient)
 
 	err = router.Run()
-
 	if err != nil {
 		panic(err)
 	}
 
-/* 	env := os.Getenv("ENV")
+	env := os.Getenv("ENV")
 	if env == "" {
 		env = "local"
 	}
+	/*
+		if env == "local" {
+			err := godotenv.Load()
+			if err != nil {
+				panic(err)
+			}
+		}
 
-	if env == "local" {
-		err := godotenv.Load()
+		cfg, err := config.NewConfig(env)
+
 		if err != nil {
 			panic(err)
 		}
-	}
 
-	cfg, err := config.NewConfig(env)
+		authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
 
-	if err != nil {
-		panic(err)
-	}
+		router := gin.New()
 
-	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
+		customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
 
-	router := gin.New()
+		router.Use(customRecovery)
 
-	customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
+		// docs endpoint
+		docs.SwaggerInfo.Host = os.Getenv("HOST")
+		router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.Use(customRecovery)
+		router.GET("/ping", func(context *gin.Context) {
+			context.JSON(http.StatusOK, gin.H{"ok": "ok"})
+		})
 
-	// docs endpoint
-	docs.SwaggerInfo.Host = os.Getenv("HOST")
-	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
+			cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
+			cfg.PublicConfig.PostgresDatabase)
 
-	router.GET("/ping", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{"ok": "ok"})
-	})
-
-	postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
-		cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
-		cfg.PublicConfig.PostgresDatabase)
-
-	if err != nil {
-		panic(err)
-	}
+		if err != nil {
+			panic(err)
+		}
 
 
-	myDatabase := database.NewDatabase(postgresDatabase)
+		myDatabase := database.NewDatabase(postgresDatabase)
 
-	productsService := products.NewService(myDatabase)
+		productsService := products.NewService(myDatabase)
 
-	productsHandler := handler.NewProductsHandler(productsService, productsService)
+		productsHandler := handler.NewProductsHandler(productsService, productsService)
 
-	productsGroup := router.Group("/products")
+		productsGroup := router.Group("/products")
 
-	productsGroup.GET("/:id", productsHandler.GetProductByID)
+		productsGroup.GET("/:id", productsHandler.GetProductByID)
 
-	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct) 
+		productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
 
-	err = router.Run()
+		err = router.Run()
 
-	if err != nil {
-		panic(err)
-	}
+		if err != nil {
+			panic(err)
+		}
 	*/
 }

@@ -6,15 +6,15 @@ import (
 	"fmt"
 )
 
-type SqlStore struct {
+type DentistRepository struct {
 	*sql.DB
 }
 
-func NewDatabase(db *sql.DB) *SqlStore {
-	return &SqlStore{db}
+func NewDentistRepository(db *sql.DB) *DentistRepository {
+	return &DentistRepository{db}
 }
 
-func (s *SqlStore) GetByID(id int) (dentists.Dentist, error){
+func (s *DentistRepository) GetByID(id int) (dentists.Dentist, error) {
 	var dentistReturn dentists.Dentist
 
 	query := fmt.Sprintf("SELECT * FROM Dentists WHERE idDentist = %d;", id)
@@ -39,7 +39,7 @@ func (s *SqlStore) GetByID(id int) (dentists.Dentist, error){
 // 	}
 
 // 	return dentist, nil
-// } 
+// }
 
 // func (s *SqlStore) Save(dentist Dentist) (Dentist, error) {
 // 	query := "INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ($1, $2, $3);"
