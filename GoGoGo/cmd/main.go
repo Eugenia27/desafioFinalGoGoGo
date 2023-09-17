@@ -63,11 +63,13 @@ func main() {
 
 	dentistsHandler := handler.NewDentistsHandler(dentistsService, dentistsService, dentistsService, dentistsService)
 
-	router.POST("/dentists", dentistsHandler.PostDentist)
-	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
-	router.PUT("/dentists/:id", dentistsHandler.PutDentist)
-	router.PATCH("/dentists/:id", dentistsHandler.PatchDentist)
-	router.DELETE("/dentists/:id", dentistsHandler.DeleteDentist)
+	dentistGroup := router.Group("/dentists")
+
+	dentistGroup.POST("/", dentistsHandler.PostDentist)
+	dentistGroup.GET("/:id", dentistsHandler.GetDentistByID)
+	dentistGroup.PUT("/:id", dentistsHandler.PutDentist)
+	dentistGroup.PATCH("/:id", dentistsHandler.PatchDentist)
+	dentistGroup.DELETE("/:id", dentistsHandler.DeleteDentist)
 
 	err = router.Run()
 
