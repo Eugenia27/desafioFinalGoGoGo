@@ -2,38 +2,68 @@ package handler
 
 import (
 	"GoGoGo/internal/dentists"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type DentistsGetter interface {
+
+type DentistCreator interface {
+	Save(dentist dentists.Dentist) (dentists.Dentist, error)
+}
+type DentistGetter interface {
+
 	GetByID(id int) (dentists.Dentist, error)
 }
 
-// type DentistCreator interface {
-// 	ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error)
-// }
-
-type DentistsHandler struct {
-	dentistsGetter DentistsGetter
-	//dentistsCreator DentistCreator
+type DentistUpdate interface {
+	ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error)
 }
 
-func NewDentistsHandler(getter DentistsGetter) *DentistsHandler {
+type DentistDelete interface {
+	Delete(id int) error
+}
+
+type DentistsHandler struct {
+	dentistsCreator DentistCreator
+	dentistsGetter  DentistGetter
+	dentistUpdate   DentistUpdate
+	dentistDelete   DentistDelete
+}
+
+func NewDentistsHandler(creator DentistCreator, getter DentistGetter, update DentistUpdate, delete DentistDelete) *DentistsHandler {
 	return &DentistsHandler{
-		dentistsGetter: getter,
-		//dentistsCreator: creator,
+		dentistsGetter:  getter,
+		dentistsCreator: creator,
+		dentistDelete:   delete,
+		dentistUpdate:   update,
+
 	}
 }
 
-// func NewDentistsHandler(getter DentistGetter, creator DentistCreator) *DentistsHandler {
-// 	return &DentistsHandler{
-// 		dentistsGetter:  getter,
-// 		//dentistsCreator: creator,
-// 	}
-// }
+func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
+
+	dentistRequest := dentists.Dentist{}
+
+	err := ctx.BindJSON(&dentistRequest)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println(dentistRequest)
+
+	dentist, err := ph.dentistsCreator.Save(dentistRequest)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "internal error"})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, dentist)
+}
 
 // GetDentistByID godoc
 // @Summary      Gets a dentist by id
@@ -58,23 +88,89 @@ func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dentist)
 }
 
-// func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {
-// 	idParam := ctx.Param("id")
-// 	id, err := strconv.Atoi(idParam)
-// 	if err != nil {
-// 		ctx.JSON(400, gin.H{"error": "invalid id"})
-// 		return
-// 	}
-// 	dentistRequest := dentists.Dentist{}
-// 	err = ctx.BindJSON(&dentistRequest)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	dentist, err := ph.dentistsCreator.ModifyByID(id, dentistRequest)
-// 	if err != nil {
-// 		ctx.JSON(500, gin.H{"error": "internal error"})
-// 		return
-// 	}
-// 	ctx.JSON(200, dentist)
-// }
+func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "invalid id"})
+		return
+	}
+
+	dentistRequest := dentists.Dentist{}
+	err = ctx.BindJSON(&dentistRequest)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	dentist, err := ph.dentistUpdate.ModifyByID(id, dentistRequest)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "internal error"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dentist)
+}
+
+func (ph *DentistsHandler) PatchDentist(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "invalid id"})
+		return
+	}
+
+	dentistRequest := dentists.Dentist{}
+	err = ctx.BindJSON(&dentistRequest)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	dentistDB, err := ph.dentistsGetter.GetByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "dentist not found"})
+		return
+	}
+
+	if dentistRequest.FirstName != "" {
+		dentistDB.FirstName = dentistRequest.FirstName
+	}
+	if dentistRequest.LastName != "" {
+		dentistDB.LastName = dentistRequest.LastName
+	}
+	if dentistRequest.RegistrationNumber != 0 {
+		dentistDB.RegistrationNumber = dentistRequest.RegistrationNumber
+	}
+
+	dentistUpdate, err := ph.dentistUpdate.ModifyByID(id, dentistDB)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "internal error"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dentistUpdate)
+}
+
+func (ph *DentistsHandler) DeleteDentist(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	_, err = ph.dentistsGetter.GetByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "dentist not found"})
+		return
+	}
+
+	deleted := ph.dentistDelete.Delete(id)
+	if deleted != nil {
+		ctx.JSON(404, gin.H{"error": "delete failed"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "dentist deleted"})
+}

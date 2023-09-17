@@ -40,6 +40,7 @@ func main() {
 		panic(err)
 	}
 
+
 	err = db.Ping()
 	if err != nil {
 		panic(err)
@@ -47,13 +48,21 @@ func main() {
 
 	router := gin.Default()
 
+
 	dentistRepository := database.NewDentistRepository(db)
 	patientRepository := database.NewPatientRepository(db)
 
 	dentistsService := dentists.NewService(dentistRepository)
 	dentistsHandler := handler.NewDentistsHandler(dentistsService)
-	router.GET("/dentists/:id", dentistsHandler.GetDentistByID)
+	dentistGroup := router.Group("/dentists")
+	dentistGroup.POST("/", dentistsHandler.PostDentist)
+	dentistGroup.GET("/:id", dentistsHandler.GetDentistByID)
+	dentistGroup.PUT("/:id", dentistsHandler.PutDentist)
+	dentistGroup.PATCH("/:id", dentistsHandler.PatchDentist)
+	dentistGroup.DELETE("/:id", dentistsHandler.DeleteDentist)
 
+  
+  
 	patientsService := patients.NewService(patientRepository)
 	patientsHandler := handler.NewPatientsHandler(patientsService, patientsService, patientsService, patientsService)
 	patientGroup := router.Group("/patients")
@@ -63,70 +72,72 @@ func main() {
 	patientGroup.PATCH("/:id", patientsHandler.PatchPatient)
 	patientGroup.DELETE("/:id", patientsHandler.DeletePatient)
 
+
 	err = router.Run()
 	if err != nil {
 		panic(err)
 	}
 
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "local"
-	}
-	/*
-		if env == "local" {
-			err := godotenv.Load()
-			if err != nil {
-				panic(err)
-			}
-		}
 
-		cfg, err := config.NewConfig(env)
+	/* 	env := os.Getenv("ENV")
+	   	if env == "" {
+	   		env = "local"
+	   	}
 
-		if err != nil {
-			panic(err)
-		}
+	   	if env == "local" {
+	   		err := godotenv.Load()
+	   		if err != nil {
+	   			panic(err)
+	   		}
+	   	}
 
-		authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
+	   	cfg, err := config.NewConfig(env)
 
-		router := gin.New()
+	   	if err != nil {
+	   		panic(err)
+	   	}
 
-		customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
+	   	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
 
-		router.Use(customRecovery)
+	   	router := gin.New()
 
-		// docs endpoint
-		docs.SwaggerInfo.Host = os.Getenv("HOST")
-		router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	   	customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
 
-		router.GET("/ping", func(context *gin.Context) {
-			context.JSON(http.StatusOK, gin.H{"ok": "ok"})
-		})
+	   	router.Use(customRecovery)
 
-		postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
-			cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
-			cfg.PublicConfig.PostgresDatabase)
+	   	// docs endpoint
+	   	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	   	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-		if err != nil {
-			panic(err)
-		}
+	   	router.GET("/ping", func(context *gin.Context) {
+	   		context.JSON(http.StatusOK, gin.H{"ok": "ok"})
+	   	})
+
+	   	postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
+	   		cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
+	   		cfg.PublicConfig.PostgresDatabase)
+
+	   	if err != nil {
+	   		panic(err)
+	   	}
 
 
-		myDatabase := database.NewDatabase(postgresDatabase)
+	   	myDatabase := database.NewDatabase(postgresDatabase)
 
-		productsService := products.NewService(myDatabase)
+	   	productsService := products.NewService(myDatabase)
 
-		productsHandler := handler.NewProductsHandler(productsService, productsService)
+	   	productsHandler := handler.NewProductsHandler(productsService, productsService)
 
-		productsGroup := router.Group("/products")
+	   	productsGroup := router.Group("/products")
 
-		productsGroup.GET("/:id", productsHandler.GetProductByID)
+	   	productsGroup.GET("/:id", productsHandler.GetProductByID)
 
-		productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
+	   	productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
 
-		err = router.Run()
+	   	err = router.Run()
 
-		if err != nil {
-			panic(err)
-		}
+	   	if err != nil {
+	   		panic(err)
+	   	}
 	*/
 }
