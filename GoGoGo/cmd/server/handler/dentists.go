@@ -9,12 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type DentistCreator interface {
 	Save(dentist dentists.Dentist) (dentists.Dentist, error)
 }
 type DentistGetter interface {
-
 	GetByID(id int) (dentists.Dentist, error)
 }
 
@@ -29,17 +27,16 @@ type DentistDelete interface {
 type DentistsHandler struct {
 	dentistsCreator DentistCreator
 	dentistsGetter  DentistGetter
-	dentistUpdate   DentistUpdate
-	dentistDelete   DentistDelete
+	dentistsUpdate  DentistUpdate
+	dentistsDelete  DentistDelete
 }
 
 func NewDentistsHandler(creator DentistCreator, getter DentistGetter, update DentistUpdate, delete DentistDelete) *DentistsHandler {
 	return &DentistsHandler{
 		dentistsGetter:  getter,
 		dentistsCreator: creator,
-		dentistDelete:   delete,
-		dentistUpdate:   update,
-
+		dentistsDelete:  delete,
+		dentistsUpdate:  update,
 	}
 }
 
@@ -65,14 +62,6 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dentist)
 }
 
-// GetDentistByID godoc
-// @Summary      Gets a dentist by id
-// @Description  Gets a dentist by id from the repository
-// @Tags         dentists
-// @Produce      json
-// @Param        id path string true "ID"
-// @Success      200 {object} dentists.Dentist
-// @Router       /dentists/{id} [get]
 func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -103,7 +92,7 @@ func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {
 		return
 	}
 
-	dentist, err := ph.dentistUpdate.ModifyByID(id, dentistRequest)
+	dentist, err := ph.dentistsUpdate.ModifyByID(id, dentistRequest)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "internal error"})
 		return
@@ -143,7 +132,7 @@ func (ph *DentistsHandler) PatchDentist(ctx *gin.Context) {
 		dentistDB.RegistrationNumber = dentistRequest.RegistrationNumber
 	}
 
-	dentistUpdate, err := ph.dentistUpdate.ModifyByID(id, dentistDB)
+	dentistUpdate, err := ph.dentistsUpdate.ModifyByID(id, dentistDB)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "internal error"})
 		return
@@ -166,7 +155,7 @@ func (ph *DentistsHandler) DeleteDentist(ctx *gin.Context) {
 		return
 	}
 
-	deleted := ph.dentistDelete.Delete(id)
+	deleted := ph.dentistsDelete.Delete(id)
 	if deleted != nil {
 		ctx.JSON(404, gin.H{"error": "delete failed"})
 		return

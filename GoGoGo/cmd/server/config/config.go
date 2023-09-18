@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"os"
 )
 
 type Config struct {
@@ -11,26 +10,26 @@ type Config struct {
 }
 
 type PublicConfig struct {
-	PublicKey        string
-	PostgresUser     string
-	PostgresHost     string
-	PostgresPort     string
-	PostgresDatabase string
+	PublicKey string
+	//PostgresUser     string
+	//PostgresHost     string
+	//PostgresPort     string
+	//PostgresDatabase string
 }
 
 type PrivateConfig struct {
-	SecretKey        string
-	PostgresPassword string
+	SecretKey string
+	//PostgresPassword string
 }
 
 var (
 	envs = map[string]PublicConfig{
 		"local": {
-			PublicKey:        "localAdmin",
-			PostgresUser:     "wini",
-			PostgresPort:     "5432",
-			PostgresHost:     "localhost",
-			PostgresDatabase: "test-database",
+			PublicKey: "localAdmin",
+			//PostgresUser:     "wini",
+			//PostgresPort:     "5432",
+			//PostgresHost:     "localhost",
+			//PostgresDatabase: "test-database",
 		},
 		"dev": {
 			PublicKey: "devAdmin",
@@ -48,22 +47,23 @@ func NewConfig(env string) (Config, error) {
 		return Config{}, errors.New("env doest not exists")
 	}
 
-	secretKey := os.Getenv("SECRET_KEY")
-	if secretKey == "" {
-		return Config{}, errors.New("secret key doest not exists in env")
-	}
+	//secretKey := os.Getenv("SECRET_KEY")
+	//if secretKey == "" {
+	//	return Config{}, errors.New("secret key doest not exists in env")
+	//}
 
-	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
-	if postgresPassword == "" {
-		return Config{}, errors.New("postgres password doest not exists in env")
-	}
+	// postgresPassword := os.Getenv("POSTGRES_PASSWORD")
+	// if postgresPassword == "" {
+	// 	return Config{}, errors.New("postgres password doest not exists in env")
+	// }
 
 	return Config{
 		PublicConfig: publicConfig,
-		PrivateConfig: PrivateConfig{
-			SecretKey:        secretKey,
-			PostgresPassword: postgresPassword,
-		},
+		//PrivateConfig: PrivateConfig
+		//{
+		//	SecretKey: secretKey,
+		//PostgresPassword: postgresPassword,
+		//},
 	}, nil
 
 }

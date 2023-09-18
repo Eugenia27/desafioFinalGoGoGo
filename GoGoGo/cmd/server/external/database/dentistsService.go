@@ -14,7 +14,6 @@ func NewDentistRepository(db *sql.DB) *DentistRepository {
 	return &DentistRepository{db}
 }
 
-
 func (s *DentistRepository) GetByID(id int) (dentists.Dentist, error) {
 	var dentistReturn dentists.Dentist
 
@@ -27,22 +26,7 @@ func (s *DentistRepository) GetByID(id int) (dentists.Dentist, error) {
 	return dentistReturn, nil
 }
 
-// func (s *SqlStore) Modify(id int, dentist dentists.Denstist) (dentists.Dentist, error) {
-// 	query := fmt.Sprintf("UPDATE Dentists SET last_name = '%s', first_name = %s, registration_number = '%s' WHERE idDenstist = %v;", dentist.LastName, dentist.FirstName, dentist.RegistrationNumber, dentist.idDenstist)
-// 	stmt, err := s.DB.Prepare(query)
-// 	if err != nil {
-// 		return dentists.Dentist{}, err
-// 	}
-
-// 	_, err = stmt.Exec()
-// 	if err != nil {
-// 		return dentists.Dentist{}, err
-// 	}
-
-// 	return dentist, nil
-// }
-
-func (s *SqlStore) Save(dentist dentists.Dentist) (dentists.Dentist, error) {
+func (s *DentistRepository) Save(dentist dentists.Dentist) (dentists.Dentist, error) {
 	query := fmt.Sprintf("INSERT INTO Dentists (last_name, first_name, registration_number) VALUES ( ?, ?, ?);")
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -58,7 +42,7 @@ func (s *SqlStore) Save(dentist dentists.Dentist) (dentists.Dentist, error) {
 	return dentist, nil
 }
 
-func (s *SqlStore) Delete(id int) error {
+func (s *DentistRepository) Delete(id int) error {
 	query := fmt.Sprintf("DELETE FROM Dentists WHERE idDentist = %d;", id)
 	_, err := s.DB.Exec(query)
 	if err != nil {
@@ -68,7 +52,7 @@ func (s *SqlStore) Delete(id int) error {
 	return nil
 }
 
-func (s *SqlStore) ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error) {
+func (s *DentistRepository) ModifyByID(id int, dentist dentists.Dentist) (dentists.Dentist, error) {
 	query := fmt.Sprintf("UPDATE Dentists SET first_name = ?, last_name = ?, registration_number = ? WHERE idDentist = ?;")
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {

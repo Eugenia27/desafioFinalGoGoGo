@@ -1,7 +1,8 @@
 package memory
 
+/*
 import (
-	"GoGoGo/internal/products"
+	//"GoGoGo/internal/products"
 	"encoding/json"
 	"errors"
 	"os"
@@ -44,3 +45,4 @@ func (s *Service) Modify(id int, product products.Product) (products.Product, er
 	}
 	return products.Product{}, errors.New("not found")
 }
+*/
