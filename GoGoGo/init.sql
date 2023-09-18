@@ -44,7 +44,7 @@ ENGINE = InnoDB;
 -- Table `finalGogogo`.`Appointments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `finalGogogo`.`Appointments` (
-  `idAppointments` INT NOT NULL,
+  `idAppointments` INT NOT NULL AUTO_INCREMENT,
   `date` DATE NULL,
   `notes` VARCHAR(100) NULL,
   `Dentists_idDentist` INT NOT NULL,

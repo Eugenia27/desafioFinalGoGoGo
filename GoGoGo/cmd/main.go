@@ -7,6 +7,7 @@ import (
 	"GoGoGo/cmd/server/external/database"
 	"GoGoGo/cmd/server/handler"
 	"GoGoGo/cmd/server/middlewares"
+	"GoGoGo/internal/appointments"
 	"GoGoGo/internal/dentists"
 	"GoGoGo/internal/patients"
 	"fmt"
@@ -25,9 +26,9 @@ func main() {
 
 	godotenv.Load()
 	env := os.Getenv("ENV")
+	fmt.Println("env load ----->" + env)
 	if env == "" {
 		env = "local"
-		fmt.Println("env load " + env)
 	}
 
 	db, err := database.Init()
@@ -52,6 +53,7 @@ func main() {
 
 	dentistRepository := database.NewDentistRepository(db)
 	patientRepository := database.NewPatientRepository(db)
+	appointmentRepository := database.NewAppointmentRepository(db)
 
 	dentistsService := dentists.NewService(dentistRepository)
 	dentistsHandler := handler.NewDentistsHandler(dentistsService, dentistsService, dentistsService, dentistsService)
@@ -70,6 +72,15 @@ func main() {
 	patientGroup.PUT("/:id", authMidd.AuthHeader, patientsHandler.PutPatient)
 	patientGroup.PATCH("/:id", authMidd.AuthHeader, patientsHandler.PatchPatient)
 	patientGroup.DELETE("/:id", authMidd.AuthHeader, patientsHandler.DeletePatient)
+
+	appointmentsService := appointments.NewService(appointmentRepository)
+	appointmentHandler := handler.NewAppointmentsHandler(appointmentsService, appointmentsService, appointmentsService, appointmentsService)
+	appointmentGroup := router.Group("/appointments")
+	appointmentGroup.POST("/", authMidd.AuthHeader, appointmentHandler.PostAppointment)
+	appointmentGroup.GET("/:id", appointmentHandler.GetAppointmentByID)
+	appointmentGroup.PUT("/:id", authMidd.AuthHeader, appointmentHandler.PutAppointment)
+	appointmentGroup.PATCH("/:id", authMidd.AuthHeader, appointmentHandler.PatchAppointment)
+	appointmentGroup.DELETE("/:id", authMidd.AuthHeader, appointmentHandler.DeleteAppointment)
 
 	err = router.Run()
 	if err != nil {
