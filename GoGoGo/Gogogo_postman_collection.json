@@ -44,7 +44,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:8080/dentists/1",
+									"raw": "http://localhost:8080/dentists/2",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -52,7 +52,7 @@
 									"port": "8080",
 									"path": [
 										"dentists",
-										"1"
+										"2"
 									]
 								}
 							},
@@ -173,7 +173,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/patients/1",
+									"raw": "http://localhost:8080/patients/2",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -181,7 +181,7 @@
 									"port": "8080",
 									"path": [
 										"patients",
-										"1"
+										"2"
 									]
 								}
 							},
@@ -199,7 +199,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:8080/patients/1",
+									"raw": "http://localhost:8080/patients/2",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -207,7 +207,7 @@
 									"port": "8080",
 									"path": [
 										"patients",
-										"1"
+										"2"
 									]
 								}
 							},
@@ -312,6 +312,182 @@
 									"path": [
 										"patients",
 										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Appointments",
+					"item": [
+						{
+							"name": "GetById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/appointments/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetByPatient",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/appointments/by_patients/1234",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments",
+										"by_patients",
+										"1234"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Public-Key",
+										"value": "localAdmin",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/appointments/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Public-Key",
+										"value": "localAdmin",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{    \r\n    \"date\":\"2023-01-04\",\r\n    \"notes\":\"lololo\",\r\n    \"Dentists_idDentist\":3,\r\n    \"Patients_idPatient\":3\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/appointments",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modify",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Public-Key",
+										"value": "localAdmin",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"date\":\"2023-01-02\",\r\n    \"notes\":\"lalalala\",\r\n    \"Dentists_idDentist\":1,\r\n    \"Patients_idPatient\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/appointments/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Path",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Public-Key",
+										"value": "localAdmin",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"notes\":\"pepepepe\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/appointments/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"appointments",
+										"5"
 									]
 								}
 							},

@@ -1,7 +1,5 @@
 package appointments
 
-//import "time"
-
 type Appointment struct {
 	AppointmentsID   int    `json:"idAppointments"`
 	Date             string `json:"date"`

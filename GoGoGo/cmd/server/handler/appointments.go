@@ -2,7 +2,6 @@ package handler
 
 import (
 	"GoGoGo/internal/appointments"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -65,8 +64,6 @@ func (ph *AppointmentsHandler) PostAppointment(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(appointmentRequest)
 
 	appointment, err := ph.appointmentsCreator.Save(appointmentRequest)
 	if err != nil {

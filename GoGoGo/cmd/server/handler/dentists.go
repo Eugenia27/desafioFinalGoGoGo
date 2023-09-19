@@ -2,7 +2,6 @@ package handler
 
 import (
 	"GoGoGo/internal/dentists"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -60,8 +59,6 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(dentistRequest)
 
 	dentist, err := ph.dentistsCreator.Save(dentistRequest)
 	if err != nil {

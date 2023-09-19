@@ -1,8 +1,5 @@
 package appointments
 
-// Repository is an interface that we used to indicate to some user how to implement
-// a repository for products.
-
 type Repository interface {
 	Save(appointment Appointment) (Appointment, error)
 	GetByID(id int) (Appointment, error)
@@ -11,7 +8,6 @@ type Repository interface {
 	GetByCredentialID(credentialId string) ([]AppointmentDTO, error)
 }
 
-// Service provides all functionalities related to appointment.
 type Service struct {
 	repository Repository
 }

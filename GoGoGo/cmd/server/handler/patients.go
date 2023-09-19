@@ -2,7 +2,6 @@ package handler
 
 import (
 	"GoGoGo/internal/patients"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -57,8 +56,6 @@ func (ph *PatientsHandler) PostPatient(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(patientRequest)
 
 	patient, err := ph.patientsCreator.Save(patientRequest)
 	if err != nil {
@@ -119,7 +116,6 @@ func (ph *PatientsHandler) PutPatient(ctx *gin.Context) {
 
 	patient, err := ph.patientsUpdate.ModifyByID(id, patientRequest)
 	if err != nil {
-		fmt.Println(err)
 		ctx.JSON(500, gin.H{"error": "internal error"})
 		return
 	}

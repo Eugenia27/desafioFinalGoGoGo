@@ -1,21 +1,15 @@
 package main
 
 import (
-	// "database/sql"
-	// _ "github.com/go-sql-driver/mysql"
 	"GoGoGo/cmd/server/config"
 	"GoGoGo/cmd/server/external/database"
 	"GoGoGo/cmd/server/handler"
 	"GoGoGo/cmd/server/middlewares"
+	"GoGoGo/docs"
 	"GoGoGo/internal/appointments"
 	"GoGoGo/internal/dentists"
 	"GoGoGo/internal/patients"
-	"fmt"
-
-	//"net/http"
 	"os"
-
-	"GoGoGo/docs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -37,13 +31,11 @@ func main() {
 
 	godotenv.Load()
 	env := os.Getenv("ENV")
-	fmt.Println("env load ----->" + env)
 	if env == "" {
 		env = "local"
 	}
 
 	db, err := database.Init()
-	fmt.Println("sql Open")
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +50,7 @@ func main() {
 		panic(err)
 	}
 
-	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey) //, cfg.PrivateConfig.SecretKey)
+	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey)
 
 	router := gin.Default()
 
@@ -106,61 +98,4 @@ func main() {
 		panic(err)
 	}
 
-	/*
-		if env == "local" {
-			err := godotenv.Load()
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		cfg, err := config.NewConfig(env)
-
-		if err != nil {
-			panic(err)
-		}
-
-		authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey, cfg.PrivateConfig.SecretKey)
-
-		router := gin.New()
-
-		customRecovery := gin.CustomRecovery(middlewares.RecoveryWithLog)
-
-		router.Use(customRecovery)
-
-		// docs endpoint
-		docs.SwaggerInfo.Host = os.Getenv("HOST")
-		router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-		router.GET("/ping", func(context *gin.Context) {
-			context.JSON(http.StatusOK, gin.H{"ok": "ok"})
-		})
-
-		postgresDatabase, err := database.NewPostgresSQLDatabase(cfg.PublicConfig.PostgresHost,
-			cfg.PublicConfig.PostgresPort, cfg.PublicConfig.PostgresUser, cfg.PrivateConfig.PostgresPassword,
-			cfg.PublicConfig.PostgresDatabase)
-
-		if err != nil {
-			panic(err)
-		}
-
-
-		myDatabase := database.NewDatabase(postgresDatabase)
-
-		productsService := products.NewService(myDatabase)
-
-		productsHandler := handler.NewProductsHandler(productsService, productsService)
-
-		productsGroup := router.Group("/products")
-
-		productsGroup.GET("/:id", productsHandler.GetProductByID)
-
-		productsGroup.PUT("/:id", authMidd.AuthHeader, productsHandler.PutProduct)
-
-		err = router.Run()
-
-		if err != nil {
-			panic(err)
-		}
-	*/
 }
