@@ -65,7 +65,6 @@ func (s *PatientRepository) ModifyByID(id int, patient patients.Patient) (patien
 	if err != nil {
 		return patients.Patient{}, err
 	}
-	fmt.Println(query)
 	_, err = stmt.Exec(patient.FirstName, patient.LastName, patient.Address, patient.CredentialID, patient.DischargeDate, id)
 	if err != nil {
 		return patients.Patient{}, err

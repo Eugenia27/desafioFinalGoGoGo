@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This API Handle Products.",
-        "title": "Certified Tech Developer",
-        "termsOfService": "https://developers.ctd.com.ar/es_ar/terminos-y-condiciones",
+        "description": "This API Handle Clinica.",
+        "title": "Clinica Odotntologica Dientes GoGoGo",
+        "termsOfService": "https://developers.gogogo.ctd.com.ar/es_ar/terminos-y-condiciones",
         "contact": {
             "name": "API Support",
-            "url": "https://developers.ctd.com.ar/support"
+            "url": "https://developers.gogogo.ctd.com.ar/support"
         },
         "license": {
             "name": "Apache 2.0",
@@ -15,16 +15,88 @@
         "version": "1.0"
     },
     "paths": {
-        "/products/{id}": {
-            "get": {
-                "description": "Gets a product by id from the repository",
+        "/appointments": {
+            "post": {
+                "description": "Crea un nuevo turno y lo almacena en la base de datos.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "products"
+                    "appointments"
                 ],
-                "summary": "Gets a product by id",
+                "summary": "Crea un nuevo turno",
+                "parameters": [
+                    {
+                        "description": "Appointment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/appointments/{credential_id}": {
+            "get": {
+                "description": "Obtener turnos por DNI de paciente en la base de datos.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Obtener turnos por DNI de paciente",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Credential_ID",
+                        "name": "credential_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/appointments/{id}": {
+            "get": {
+                "description": "Obtener un turno por su ID existente en la base de datos.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Obtener un turno por su ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -38,7 +110,491 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/products.Product"
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "description": "Modifica la información de un turno existente en la base de datos. Este endpoint permite actualizar los detalles de un odontólogo identificado por su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Modificar un turno",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Appointment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un odontólogo existente en la base de datos por su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Eliminar a un turno por su ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "Appointment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    }
+                }
+            },
+            "patch": {
+                "description": "Modifica la información de un turno existente en la base de datos por alguno de sus campos. Los campos no proporcionados en la solicitud permanecerán sin cambios en el odontólogo.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Modificar turno",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Appointment",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/appointments.Appointment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/dentists": {
+            "post": {
+                "description": "Crea un nuevo odontólogo y lo almacena en la base de datos.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Crea un nuevo odontologo",
+                "parameters": [
+                    {
+                        "description": "Dentist",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/dentists/{id}": {
+            "get": {
+                "description": "Obtener un odontologo por su ID existente en la base de datos.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Obtener un odontologo por su ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "description": "Modifica la información de un odontologo existente en la base de datos. Este endpoint permite actualizar los detalles de un odontólogo identificado por su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Modificar un odontologo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dentist",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un odontólogo existente en la base de datos por su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Eliminar a un odontologo por su ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "Dentist"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            },
+            "patch": {
+                "description": "Modifica la información de un odontologo existente en la base de datos por alguno de sus campos. Los campos no proporcionados en la solicitud permanecerán sin cambios en el odontólogo.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Modificar odontologo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dentist",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dentists.Dentist"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/patients": {
+            "post": {
+                "description": "Guarda nuevo paciente en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Guarda nuevo paciente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/patients/{id}": {
+            "get": {
+                "description": "Obtiene un paciente por id desde la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Obtiene un paciente por id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "Paciente"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Modifica un paciente existente por id y lo almacena en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Modifica un paciente existente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un paciente por id en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Elimina un paciente por id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "Paciente"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "Paciente"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Modifica uno o más atributos de un paciente existente y almacena los cambios en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Modifica uno o más atributos de un paciente existente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "Paciente"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "Error"
                         }
                     }
                 }
@@ -46,33 +602,63 @@
         }
     },
     "definitions": {
-        "products.Product": {
+        "appointments.Appointment": {
             "type": "object",
-            "required": [
-                "expiration",
-                "price"
-            ],
             "properties": {
-                "code_value": {
-                    "type": "string"
-                },
-                "expiration": {
-                    "type": "string"
-                },
-                "id": {
+                "Dentists_idDentist": {
                     "type": "integer"
                 },
-                "is_published": {
-                    "type": "boolean"
+                "Patients_idPatient": {
+                    "type": "integer"
                 },
-                "name": {
+                "date": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "number"
-                },
-                "quantity": {
+                "idAppointments": {
                     "type": "integer"
+                },
+                "notes": {
+                    "type": "string"
+                }
+            }
+        },
+        "dentists.Dentist": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "idDentist": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "registration_number": {
+                    "type": "integer"
+                }
+            }
+        },
+        "patients.Patient": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "credential_id": {
+                    "type": "string"
+                },
+                "discharge_date": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "idPatient": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
                 }
             }
         }

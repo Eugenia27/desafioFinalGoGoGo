@@ -2,7 +2,6 @@ package handler
 
 import (
 	"GoGoGo/internal/dentists"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -40,6 +39,16 @@ func NewDentistsHandler(creator DentistCreator, getter DentistGetter, update Den
 	}
 }
 
+// PostDentist
+// @Summary      Crea un nuevo odontologo
+// @Description  Crea un nuevo odontólogo y lo almacena en la base de datos.
+// @Tags         dentists
+// @Produce      json
+// @Param 		 body body dentists.Dentist true "Dentist"
+// @Success      201 {object} dentists.Dentist
+// @Failure		 400 {object} error
+// @Failure		 500 {object} error: internal error
+// @Router       /dentists [post]
 func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 
 	dentistRequest := dentists.Dentist{}
@@ -51,8 +60,6 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(dentistRequest)
-
 	dentist, err := ph.dentistsCreator.Save(dentistRequest)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "internal error"})
@@ -62,6 +69,16 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dentist)
 }
 
+// GetDentistByID
+// @Summary      Obtener un odontologo por su ID
+// @Description  Obtener un odontologo por su ID existente en la base de datos.
+// @Tags         dentists
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200 {object} dentists.Dentist
+// @Failure		 400 {object} error: invalid id
+// @Failure	     404 {object} error: dentist not found
+// @Router       /dentists/{id} [get]
 func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -77,6 +94,17 @@ func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dentist)
 }
 
+// PutDentist
+// @Summary      Modificar un odontologo
+// @Description  Modifica la información de un odontologo existente en la base de datos. Este endpoint permite actualizar los detalles de un odontólogo identificado por su ID.
+// @Tags         dentists
+// @Produce      json
+// @Param        id path string true "ID"
+// @Param 		 body body dentists.Dentist true "Dentist"
+// @Success      200 {object} dentists.Dentist
+// @Failure		 400 {object} error: invalid id
+// @Failure		 500 {object} error: internal error
+// @Router       /dentists/{id} [put]
 func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -101,6 +129,18 @@ func (ph *DentistsHandler) PutDentist(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dentist)
 }
 
+// PatchDentist
+// @Summary      Modificar odontologo
+// @Description  Modifica la información de un odontologo existente en la base de datos por alguno de sus campos. Los campos no proporcionados en la solicitud permanecerán sin cambios en el odontólogo.
+// @Tags         dentists
+// @Produce      json
+// @Param        id path string true "ID"
+// @Param 		 body body dentists.Dentist true "Dentist"
+// @Success      200 {object} dentists.Dentist
+// @Failure		 400 {object} error: invalid id
+// @Failure		 400 {object} error: dentist not found
+// @Failure		 500 {object} error: internal error
+// @Router       /dentists/{id} [patch]
 func (ph *DentistsHandler) PatchDentist(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -141,6 +181,17 @@ func (ph *DentistsHandler) PatchDentist(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dentistUpdate)
 }
 
+// DeleteDentist
+// @Summary      Eliminar a un odontologo por su ID.
+// @Description  Elimina un odontólogo existente en la base de datos por su ID.
+// @Tags         dentists
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200  Dentist deleted
+// @Failure		 400 {object} error: invalid id
+// @Failure		 400 {object} error: dentist not found
+// @Failure		 400 {object} error: delete failed
+// @Router       /dentists/{id} [delete]
 func (ph *DentistsHandler) DeleteDentist(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)

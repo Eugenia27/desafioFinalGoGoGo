@@ -1,39 +1,106 @@
 definitions:
-  products.Product:
+  appointments.Appointment:
     properties:
-      code_value:
-        type: string
-      expiration:
-        type: string
-      id:
+      Dentists_idDentist:
         type: integer
-      is_published:
-        type: boolean
-      name:
-        type: string
-      price:
-        type: number
-      quantity:
+      Patients_idPatient:
         type: integer
-    required:
-    - expiration
-    - price
+      date:
+        type: string
+      idAppointments:
+        type: integer
+      notes:
+        type: string
+    type: object
+  dentists.Dentist:
+    properties:
+      first_name:
+        type: string
+      idDentist:
+        type: integer
+      last_name:
+        type: string
+      registration_number:
+        type: integer
+    type: object
+  patients.Patient:
+    properties:
+      address:
+        type: string
+      credential_id:
+        type: string
+      discharge_date:
+        type: string
+      first_name:
+        type: string
+      idPatient:
+        type: integer
+      last_name:
+        type: string
     type: object
 info:
   contact:
     name: API Support
-    url: https://developers.ctd.com.ar/support
-  description: This API Handle Products.
+    url: https://developers.gogogo.ctd.com.ar/support
+  description: This API Handle Clinica.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: https://developers.ctd.com.ar/es_ar/terminos-y-condiciones
-  title: Certified Tech Developer
+  termsOfService: https://developers.gogogo.ctd.com.ar/es_ar/terminos-y-condiciones
+  title: Clinica Odotntologica Dientes GoGoGo
   version: "1.0"
 paths:
-  /products/{id}:
+  /appointments:
+    post:
+      description: Crea un nuevo turno y lo almacena en la base de datos.
+      parameters:
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/appointments.Appointment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/appointments.Appointment'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Crea un nuevo turno
+      tags:
+      - appointments
+  /appointments/{credential_id}:
     get:
-      description: Gets a product by id from the repository
+      description: Obtener turnos por DNI de paciente en la base de datos.
+      parameters:
+      - description: Credential_ID
+        in: path
+        name: credential_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/appointments.Appointment'
+        "404":
+          description: Not Found
+          schema: {}
+      summary: Obtener turnos por DNI de paciente
+      tags:
+      - appointments
+  /appointments/{id}:
+    delete:
+      description: Elimina un odontólogo existente en la base de datos por su ID.
       parameters:
       - description: ID
         in: path
@@ -46,8 +113,345 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/products.Product'
-      summary: Gets a product by id
+            type: Appointment
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+      summary: Eliminar a un turno por su ID.
       tags:
-      - products
+      - appointments
+    get:
+      description: Obtener un turno por su ID existente en la base de datos.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/appointments.Appointment'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+      summary: Obtener un turno por su ID
+      tags:
+      - appointments
+    patch:
+      description: Modifica la información de un turno existente en la base de datos
+        por alguno de sus campos. Los campos no proporcionados en la solicitud permanecerán
+        sin cambios en el odontólogo.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/appointments.Appointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/appointments.Appointment'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Modificar turno
+      tags:
+      - appointments
+    put:
+      description: Modifica la información de un turno existente en la base de datos.
+        Este endpoint permite actualizar los detalles de un odontólogo identificado
+        por su ID.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/appointments.Appointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/appointments.Appointment'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Modificar un turno
+      tags:
+      - appointments
+  /dentists:
+    post:
+      description: Crea un nuevo odontólogo y lo almacena en la base de datos.
+      parameters:
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dentists.Dentist'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dentists.Dentist'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Crea un nuevo odontologo
+      tags:
+      - dentists
+  /dentists/{id}:
+    delete:
+      description: Elimina un odontólogo existente en la base de datos por su ID.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: Dentist
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Eliminar a un odontologo por su ID.
+      tags:
+      - dentists
+    get:
+      description: Obtener un odontologo por su ID existente en la base de datos.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dentists.Dentist'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+      summary: Obtener un odontologo por su ID
+      tags:
+      - dentists
+    patch:
+      description: Modifica la información de un odontologo existente en la base de
+        datos por alguno de sus campos. Los campos no proporcionados en la solicitud
+        permanecerán sin cambios en el odontólogo.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dentists.Dentist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dentists.Dentist'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Modificar odontologo
+      tags:
+      - dentists
+    put:
+      description: Modifica la información de un odontologo existente en la base de
+        datos. Este endpoint permite actualizar los detalles de un odontólogo identificado
+        por su ID.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dentists.Dentist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dentists.Dentist'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Modificar un odontologo
+      tags:
+      - dentists
+  /patients:
+    post:
+      description: Guarda nuevo paciente en la base de datos
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/patients.Patient'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: Error
+      summary: Guarda nuevo paciente
+      tags:
+      - patients
+  /patients/{id}:
+    delete:
+      description: Elimina un paciente por id en la base de datos
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: Paciente
+        "404":
+          description: Not Found
+          schema:
+            type: Paciente
+      summary: Elimina un paciente por id
+      tags:
+      - patients
+    get:
+      description: Obtiene un paciente por id desde la base de datos
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/patients.Patient'
+        "404":
+          description: Not Found
+          schema:
+            type: Paciente
+      summary: Obtiene un paciente por id
+      tags:
+      - patients
+    patch:
+      description: Modifica uno o más atributos de un paciente existente y almacena
+        los cambios en la base de datos
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/patients.Patient'
+        "400":
+          description: Bad Request
+          schema:
+            type: Paciente
+        "500":
+          description: Internal Server Error
+          schema:
+            type: Error
+      summary: Modifica uno o más atributos de un paciente existente
+      tags:
+      - patients
+    put:
+      description: Modifica un paciente existente por id y lo almacena en la base
+        de datos
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/patients.Patient'
+        "400":
+          description: Bad Request
+          schema:
+            type: Error
+        "500":
+          description: Internal Server Error
+          schema:
+            type: Error
+      summary: Modifica un paciente existente
+      tags:
+      - patients
 swagger: "2.0"

@@ -11,11 +11,9 @@ type Auth struct {
 	publicKey, privateKey string
 }
 
-// func NewAuth(publicKey, privateKey string) *Auth {
 func NewAuth(publicKey string) *Auth {
 	return &Auth{
 		publicKey: publicKey,
-		//privateKey: privateKey,
 	}
 }
 

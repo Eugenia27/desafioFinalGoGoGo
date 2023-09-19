@@ -9,7 +9,6 @@ import (
 
 func Init() (*sql.DB, error) {
 	dataSource := "user:password@tcp(localhost:3309)/finalGogogo"
-	// Open inicia un pool de conexiones. Solo abrir una vez
 	storageDB, err := sql.Open("mysql", dataSource)
 	fmt.Println("Dentro del init()")
 	if err != nil {

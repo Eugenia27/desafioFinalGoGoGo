@@ -1,8 +1,5 @@
 package dentists
 
-// Repository is an interface that we used to indicate to some user how to implement
-// a repository for products.
-
 type Repository interface {
 	Save(dentist Dentist) (Dentist, error)
 	GetByID(id int) (Dentist, error)
@@ -10,7 +7,6 @@ type Repository interface {
 	Delete(id int) error
 }
 
-// Service provides all functionalities related to dentist.
 type Service struct {
 	repository Repository
 }

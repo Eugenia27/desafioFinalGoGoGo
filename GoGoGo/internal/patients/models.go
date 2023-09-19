@@ -1,7 +1,5 @@
 package patients
 
-//import "time"
-
 type Patient struct {
 	PatientID     int    `json:"idPatient"`
 	FirstName     string `json:"first_name"`
