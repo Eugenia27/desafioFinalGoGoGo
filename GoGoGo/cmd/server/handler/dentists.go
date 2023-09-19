@@ -190,7 +190,7 @@ func (ph *DentistsHandler) PatchDentist(ctx *gin.Context) {
 // @Tags         dentists
 // @Produce      json
 // @Param        id path string true "ID"
-// @Success      200 {object} message: dentist deleted
+// @Success      200  Dentist deleted
 // @Failure		 400 {object} error: invalid id
 // @Failure		 400 {object} error: dentist not found
 // @Failure		 400 {object} error: delete failed

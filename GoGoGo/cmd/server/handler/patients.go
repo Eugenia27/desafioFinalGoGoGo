@@ -48,7 +48,7 @@ func NewPatientsHandler(creator PatientCreator, getter PatientsGetter, update Pa
 // @Produce      json
 // @Body         {first_name:"first_name", last_name:"last_name", address:"calle altura", credential_id:"1234", discharge_date:"AAAA-MM-DD"}
 // @Success      201 {object} patients.Patient
-// @Error        500 Error interno
+// @Failure      500 Error interno
 // @Router       /patients [post]
 func (ph *PatientsHandler) PostPatient(ctx *gin.Context) {
 	patientRequest := patients.Patient{}
@@ -75,7 +75,7 @@ func (ph *PatientsHandler) PostPatient(ctx *gin.Context) {
 // @Produce      json
 // @Param        id path string true "ID"
 // @Success      200 {object} patients.Patient
-// @Error        404 Paciente no encontrado, ID incorrecto
+// @Failure      404 Paciente no encontrado, ID incorrecto
 // @Router       /patients/{id} [get]
 func (ph *PatientsHandler) GetPatientByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -99,9 +99,9 @@ func (ph *PatientsHandler) GetPatientByID(ctx *gin.Context) {
 // @Produce      json
 // @Body         {first_name:"first_name", last_name:"last_name", address:"calle altura", credential_id:"1234", discharge_date:"AAAA-MM-DD"}
 // @Success      201 {object} patients.Patient
-// @Error        400 Error caracter inválido
-// @Error        500 Error interno
-// @Router       /patients [put]
+// @Failure      400 Error caracter inválido
+// @Failure      500 Error interno
+// @Router       /patients/{id} [put]
 func (ph *PatientsHandler) PutPatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -134,9 +134,9 @@ func (ph *PatientsHandler) PutPatient(ctx *gin.Context) {
 // @Produce      json
 // @Body         {[first_name:"first_name", last_name:"last_name"], [address:"calle altura"], [credential_id:"1234"], [discharge_date:"AAAA-MM-DD"]}
 // @Success      201 {object} patients.Patient
-// @Error        400 Paciente no encontrado, ID incorrecto
-// @Error        500 Error interno
-// @Router       /patients [patch]
+// @Failure      400 Paciente no encontrado, ID incorrecto
+// @Failure      500 Error interno
+// @Router       /patients/{id} [patch]
 func (ph *PatientsHandler) PatchPatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -190,7 +190,7 @@ func (ph *PatientsHandler) PatchPatient(ctx *gin.Context) {
 // @Produce      json
 // @Param        id path string true "ID"
 // @Success      200 Paciente eliminado
-// @Error        404 Paciente no encontrado, ID incorrecto
+// @Failure      404 Paciente no encontrado, ID incorrecto
 // @Router       /patients/{id} [delete]
 func (ph *PatientsHandler) DeletePatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
