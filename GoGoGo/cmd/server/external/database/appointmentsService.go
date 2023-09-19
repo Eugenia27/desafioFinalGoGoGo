@@ -4,6 +4,7 @@ import (
 	"GoGoGo/internal/appointments"
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 type AppointmentRepository struct {
@@ -74,22 +75,35 @@ func (s *AppointmentRepository) ModifyByID(id int, appointment appointments.Appo
 	return appointment, nil
 }
 
-// func (s *AppointmentRepository) GetByAppointmentsByPatientCredential(credentialId string) ([]appointments.Appointment, error) {
-// 	var appointmentReturn []appointments.Appointment
-// 	var patientId int
+func (s *AppointmentRepository) GetByCredentialID(credentialId string) ([]appointments.AppointmentDTO, error) {
+	var appointmentDTO []appointments.AppointmentDTO
 
-// 	patientId = patientsService.GetByCredentialID(credentialId)
+	query := fmt.Sprintf(`SELECT ap.date
+	, ap.notes
+	, concat(dt.last_name,", ",dt.first_name) as dentist
+	, concat(pt.last_name,", ",pt.first_name) as patient
+	FROM finalGogogo.Appointments ap
+	left join finalGogogo.Patients pt on ap.Patients_idPatient = pt.idPatient
+	left join finalGogogo.Dentists dt on ap.Dentists_idDentist = dt.idDentist
+	WHERE pt.credential_id = ?;`)
 
-// 	query := fmt.Sprintf("SELECT * FROM Appointments WHERE idAppointments = %d;", id)
-// 	row := s.DB.QueryRow(query)
-// 	err := row.Scan(&appointmentReturn.AppointmentsID,
-// 		&appointmentReturn.Date,
-// 		&appointmentReturn.Notes,
-// 		&appointmentReturn.DentistIdDentist,
-// 		&appointmentReturn.PatientIdPatient)
-// 	if err != nil {
-// 		return appointments.Appointment{}, err
-// 	}
+	rows, err := s.DB.Query(query, credentialId)
+	if err != nil {
+		return appointmentDTO, err
+	}
+	defer rows.Close()
 
-// 	return appointmentReturn, nil
-// }
+	for rows.Next() {
+		var appDate, appNotes, appDentist, appPatient string
+		if err := rows.Scan(&appDate, &appNotes, &appDentist, &appPatient); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("appDate: %s,  appNotes: %s,  appDentist: %s,  appPatient: %s \n", appDate, appNotes, appDentist, appPatient)
+		appointmentDTO = append(appointmentDTO, appointments.AppointmentDTO{Date: appDate, Notes: appNotes, DentistName: appDentist, PatientName: appPatient})
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return appointmentDTO, nil
+}

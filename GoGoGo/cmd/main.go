@@ -74,13 +74,14 @@ func main() {
 	patientGroup.DELETE("/:id", authMidd.AuthHeader, patientsHandler.DeletePatient)
 
 	appointmentsService := appointments.NewService(appointmentRepository)
-	appointmentHandler := handler.NewAppointmentsHandler(appointmentsService, appointmentsService, appointmentsService, appointmentsService)
+	appointmentHandler := handler.NewAppointmentsHandler(appointmentsService, appointmentsService, appointmentsService, appointmentsService, appointmentsService)
 	appointmentGroup := router.Group("/appointments")
 	appointmentGroup.POST("/", authMidd.AuthHeader, appointmentHandler.PostAppointment)
 	appointmentGroup.GET("/:id", appointmentHandler.GetAppointmentByID)
 	appointmentGroup.PUT("/:id", authMidd.AuthHeader, appointmentHandler.PutAppointment)
 	appointmentGroup.PATCH("/:id", authMidd.AuthHeader, appointmentHandler.PatchAppointment)
 	appointmentGroup.DELETE("/:id", authMidd.AuthHeader, appointmentHandler.DeleteAppointment)
+	appointmentGroup.GET("/by_patients/:credential_id", appointmentHandler.GetAppointmentByPatient)
 
 	err = router.Run()
 	if err != nil {

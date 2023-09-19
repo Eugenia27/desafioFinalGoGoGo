@@ -16,6 +16,10 @@ type AppointmentGetter interface {
 	GetByID(id int) (appointments.Appointment, error)
 }
 
+type AppointmentGetterByPatient interface {
+	GetByCredentialID(credentialId string) ([]appointments.AppointmentDTO, error)
+}
+
 type AppointmentUpdate interface {
 	ModifyByID(id int, appointment appointments.Appointment) (appointments.Appointment, error)
 }
@@ -25,18 +29,20 @@ type AppointmentDelete interface {
 }
 
 type AppointmentsHandler struct {
-	appointmentsCreator AppointmentCreator
-	appointmentsGetter  AppointmentGetter
-	appointmentsUpdate  AppointmentUpdate
-	appointmentsDelete  AppointmentDelete
+	appointmentsCreator         AppointmentCreator
+	appointmentsGetter          AppointmentGetter
+	appointmentsGetterByPatient AppointmentGetterByPatient
+	appointmentsUpdate          AppointmentUpdate
+	appointmentsDelete          AppointmentDelete
 }
 
-func NewAppointmentsHandler(creator AppointmentCreator, getter AppointmentGetter, update AppointmentUpdate, delete AppointmentDelete) *AppointmentsHandler {
+func NewAppointmentsHandler(creator AppointmentCreator, getter AppointmentGetter, getterByPatient AppointmentGetterByPatient, update AppointmentUpdate, delete AppointmentDelete) *AppointmentsHandler {
 	return &AppointmentsHandler{
-		appointmentsGetter:  getter,
-		appointmentsCreator: creator,
-		appointmentsDelete:  delete,
-		appointmentsUpdate:  update,
+		appointmentsGetter:          getter,
+		appointmentsGetterByPatient: getterByPatient,
+		appointmentsCreator:         creator,
+		appointmentsDelete:          delete,
+		appointmentsUpdate:          update,
 	}
 }
 
@@ -164,4 +170,20 @@ func (ph *AppointmentsHandler) DeleteAppointment(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "appointment deleted"})
+}
+
+func (ph *AppointmentsHandler) GetAppointmentByPatient(ctx *gin.Context) {
+	credentialId := ctx.Param("credential_id")
+	//idParam := ctx.Param("id")
+	//credential_id, err := strconv.Atoi(idParam)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+	// 	return
+	// }
+	appointment, err := ph.appointmentsGetterByPatient.GetByCredentialID(credentialId)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "appointment not found"})
+		return
+	}
+	ctx.JSON(http.StatusOK, appointment)
 }

@@ -8,6 +8,7 @@ type Repository interface {
 	GetByID(id int) (Appointment, error)
 	ModifyByID(id int, appointment Appointment) (Appointment, error)
 	Delete(id int) error
+	GetByCredentialID(credentialId string) ([]AppointmentDTO, error)
 }
 
 // Service provides all functionalities related to appointment.
@@ -33,4 +34,8 @@ func (s *Service) ModifyByID(id int, appointment Appointment) (Appointment, erro
 
 func (s *Service) Delete(id int) error {
 	return s.repository.Delete(id)
+}
+
+func (s *Service) GetByCredentialID(credentialId string) ([]AppointmentDTO, error) {
+	return s.repository.GetByCredentialID(credentialId)
 }

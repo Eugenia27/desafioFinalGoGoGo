@@ -75,15 +75,15 @@ func (s *PatientRepository) ModifyByID(id int, patient patients.Patient) (patien
 	return patient, nil
 }
 
-// func (s *PatientRepository) GetByCredentialID(credentialId string) (int, error) {
-// 	var patientId int
+func (s *PatientRepository) GetByCredentialID(credentialId string) (int, error) {
+	var patientId int
 
-// 	query := fmt.Sprintf("SELECT idPatient FROM Patients WHERE credential_id = %s;", credentialId)
-// 	row := s.DB.QueryRow(query)
-// 	err := row.Scan(&patientId)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+	query := fmt.Sprintf("SELECT idPatient FROM Patients WHERE credential_id = %s;", credentialId)
+	row := s.DB.QueryRow(query)
+	err := row.Scan(&patientId)
+	if err != nil {
+		return 0, err
+	}
 
-// 	return patientId, nil
-// }
+	return patientId, nil
+}
