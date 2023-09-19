@@ -1,39 +1,30 @@
 definitions:
-  products.Product:
+  dentists.Dentist:
     properties:
-      code_value:
+      first_name:
         type: string
-      expiration:
-        type: string
-      id:
+      idDentist:
         type: integer
-      is_published:
-        type: boolean
-      name:
+      last_name:
         type: string
-      price:
-        type: number
-      quantity:
+      registration_number:
         type: integer
-    required:
-    - expiration
-    - price
     type: object
 info:
   contact:
     name: API Support
-    url: https://developers.ctd.com.ar/support
-  description: This API Handle Products.
+    url: https://developers.gogogo.ctd.com.ar/support
+  description: This API Handle Clinica.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: https://developers.ctd.com.ar/es_ar/terminos-y-condiciones
-  title: Certified Tech Developer
+  termsOfService: https://developers.gogogo.ctd.com.ar/es_ar/terminos-y-condiciones
+  title: Clinica Odotntologica Dientes GoGoGo
   version: "1.0"
 paths:
-  /products/{id}:
+  /dentists/{id}:
     get:
-      description: Gets a product by id from the repository
+      description: Gets a dentist by ID from the repository
       parameters:
       - description: ID
         in: path
@@ -46,8 +37,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/products.Product'
-      summary: Gets a product by id
+            $ref: '#/definitions/dentists.Dentist'
+      summary: Gets a dentist by ID
       tags:
-      - products
+      - dentists.Dentist
 swagger: "2.0"

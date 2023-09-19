@@ -62,6 +62,14 @@ func (ph *DentistsHandler) PostDentist(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dentist)
 }
 
+// GetDentistByID
+// @Summary      Gets a dentist by ID
+// @Description  Gets a dentist by ID from the repository
+// @Tags         dentists.Dentist
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200 {object} dentists.Dentist
+// @Router       /dentists/{id} [get]
 func (ph *DentistsHandler) GetDentistByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)

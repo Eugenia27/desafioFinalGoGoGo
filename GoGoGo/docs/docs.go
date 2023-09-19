@@ -9,10 +9,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "https://developers.ctd.com.ar/es_ar/terminos-y-condiciones",
+        "termsOfService": "https://developers.gogogo.ctd.com.ar/es_ar/terminos-y-condiciones",
         "contact": {
             "name": "API Support",
-            "url": "https://developers.ctd.com.ar/support"
+            "url": "https://developers.gogogo.ctd.com.ar/support"
         },
         "license": {
             "name": "Apache 2.0",
@@ -23,16 +23,16 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/products/{id}": {
+        "/dentists/{id}": {
             "get": {
-                "description": "Gets a product by id from the repository",
+                "description": "Gets a dentist by ID from the repository",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "products"
+                    "dentists.Dentist"
                 ],
-                "summary": "Gets a product by id",
+                "summary": "Gets a dentist by ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -46,7 +46,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/products.Product"
+                            "$ref": "#/definitions/dentists.Dentist"
                         }
                     }
                 }
@@ -54,32 +54,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "products.Product": {
+        "dentists.Dentist": {
             "type": "object",
-            "required": [
-                "expiration",
-                "price"
-            ],
             "properties": {
-                "code_value": {
+                "first_name": {
                     "type": "string"
                 },
-                "expiration": {
-                    "type": "string"
-                },
-                "id": {
+                "idDentist": {
                     "type": "integer"
                 },
-                "is_published": {
-                    "type": "boolean"
-                },
-                "name": {
+                "last_name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "number"
-                },
-                "quantity": {
+                "registration_number": {
                     "type": "integer"
                 }
             }
@@ -93,8 +80,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Certified Tech Developer",
-	Description:      "This API Handle Products.",
+	Title:            "Clinica Odotntologica Dientes GoGoGo",
+	Description:      "This API Handle Clinica.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
