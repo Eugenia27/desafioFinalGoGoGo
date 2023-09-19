@@ -176,5 +176,14 @@ Este documento proporciona una descripción general de las funciones y endpoints
 - **Respuesta exitosa:** Devuelve una lista de citas médicas relacionadas con el paciente con un código de estado 200 (Éxito).
 - **Errores posibles:** Si el ID de la credencial es inválido o no se encuentra ninguna cita asociada al paciente, se devuelve un código de estado 400 (Solicitud incorrecta) o 404 (No encontrado), respectivamente.
 
+---
 
+# swagger
 
+![Mi imagen local](./GoGoGo/files/01_rutas.png)
+
+![Mi imagen local](./GoGoGo/files/02_rutas.png)
+
+![Mi imagen local](./GoGoGo/files/03_rutas.png)
+
+![Mi imagen local](./GoGoGo/files/04_rutas.png)
