@@ -15,13 +15,24 @@ import (
 	//"net/http"
 	"os"
 
+	"GoGoGo/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	//swaggerFiles "github.com/swaggo/files"
-	//ginSwagger "github.com/swaggo/gin-swagger"
-	//"github.com/swaggo/swag/example/basic/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Clinica Odotntologica Dientes GoGoGo
+// @version 1.0
+// @description This API Handle Clinica.
+// @termsOfService https://developers.gogogo.ctd.com.ar/es_ar/terminos-y-condiciones
+
+// @contact.name API Support
+// @contact.url https://developers.gogogo.ctd.com.ar/support
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
 
 	godotenv.Load()
@@ -50,6 +61,13 @@ func main() {
 	authMidd := middlewares.NewAuth(cfg.PublicConfig.PublicKey) //, cfg.PrivateConfig.SecretKey)
 
 	router := gin.Default()
+
+	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	if docs.SwaggerInfo.Host == "" {
+		docs.SwaggerInfo.Host = "localhost:8080"
+	}
+
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	dentistRepository := database.NewDentistRepository(db)
 	patientRepository := database.NewPatientRepository(db)
