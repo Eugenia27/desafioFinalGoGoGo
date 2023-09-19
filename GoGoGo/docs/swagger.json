@@ -43,6 +43,118 @@
                     }
                 }
             }
+        },
+        "/patients": {
+            "put": {
+                "description": "Modifica un paciente existente por id y lo almacena en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Modifica un paciente existente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Guarda nuevo paciente en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Guarda nuevo paciente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Modifica uno o más atributos de un paciente existente y almacena los cambios en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Modifica uno o más atributos de un paciente existente",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    }
+                }
+            }
+        },
+        "/patients/{id}": {
+            "get": {
+                "description": "Obtiene un paciente por id desde la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Obtiene un paciente por id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/patients.Patient"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un paciente por id en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Elimina un paciente por id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "Paciente"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -60,6 +172,29 @@
                 },
                 "registration_number": {
                     "type": "integer"
+                }
+            }
+        },
+        "patients.Patient": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "credential_id": {
+                    "type": "string"
+                },
+                "discharge_date": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "idPatient": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
                 }
             }
         }

@@ -41,15 +41,15 @@ func NewPatientsHandler(creator PatientCreator, getter PatientsGetter, update Pa
 	}
 }
 
-// GetPatientByID godoc
-// @Summary      Gets a patient by id
-// @Description  Gets a patient by id from the repository
+// PostPatient godoc
+// @Summary      Guarda nuevo paciente
+// @Description  Guarda nuevo paciente en la base de datos
 // @Tags         patients
 // @Produce      json
-// @Param        id path string true "ID"
-// @Success      200 {object} patients.Patient
-// @Router       /patients/{id} [get]
-
+// @Body         {first_name:"first_name", last_name:"last_name", address:"calle altura", credential_id:"1234", discharge_date:"AAAA-MM-DD"}
+// @Success      201 {object} patients.Patient
+// @Error        500 Error interno
+// @Router       /patients [post]
 func (ph *PatientsHandler) PostPatient(ctx *gin.Context) {
 	patientRequest := patients.Patient{}
 	err := ctx.BindJSON(&patientRequest)
@@ -68,6 +68,15 @@ func (ph *PatientsHandler) PostPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, patient)
 }
 
+// GetPatientByID godoc
+// @Summary      Obtiene un paciente por id
+// @Description  Obtiene un paciente por id desde la base de datos
+// @Tags         patients
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200 {object} patients.Patient
+// @Error        404 Paciente no encontrado, ID incorrecto
+// @Router       /patients/{id} [get]
 func (ph *PatientsHandler) GetPatientByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -83,6 +92,16 @@ func (ph *PatientsHandler) GetPatientByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, patient)
 }
 
+// PutPatient godoc
+// @Summary      Modifica un paciente existente
+// @Description  Modifica un paciente existente por id y lo almacena en la base de datos
+// @Tags         patients
+// @Produce      json
+// @Body         {first_name:"first_name", last_name:"last_name", address:"calle altura", credential_id:"1234", discharge_date:"AAAA-MM-DD"}
+// @Success      201 {object} patients.Patient
+// @Error        400 Error caracter inválido
+// @Error        500 Error interno
+// @Router       /patients [put]
 func (ph *PatientsHandler) PutPatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -108,6 +127,16 @@ func (ph *PatientsHandler) PutPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, patient)
 }
 
+// PatchPatient godoc
+// @Summary      Modifica uno o más atributos de un paciente existente
+// @Description  Modifica uno o más atributos de un paciente existente y almacena los cambios en la base de datos
+// @Tags         patients
+// @Produce      json
+// @Body         {[first_name:"first_name", last_name:"last_name"], [address:"calle altura"], [credential_id:"1234"], [discharge_date:"AAAA-MM-DD"]}
+// @Success      201 {object} patients.Patient
+// @Error        400 Paciente no encontrado, ID incorrecto
+// @Error        500 Error interno
+// @Router       /patients [patch]
 func (ph *PatientsHandler) PatchPatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -154,6 +183,15 @@ func (ph *PatientsHandler) PatchPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, patientUpdate)
 }
 
+// DeletePatient godoc
+// @Summary      Elimina un paciente por id
+// @Description  Elimina un paciente por id en la base de datos
+// @Tags         patients
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200 Paciente eliminado
+// @Error        404 Paciente no encontrado, ID incorrecto
+// @Router       /patients/{id} [delete]
 func (ph *PatientsHandler) DeletePatient(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.Atoi(idParam)
