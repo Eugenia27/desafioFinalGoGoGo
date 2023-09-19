@@ -1,17 +1,21 @@
-version: '3.8'
-
+version: '3.3'
 services:
-  postgres:
-    image: postgres:latest
-    container_name: my-postgres
+  db:
+    image: mysql:5.7
+    restart: always
+    container_name: 'mysql-db'
     environment:
-      POSTGRES_USER: wini
-      POSTGRES_PASSWORD: wini
-      POSTGRES_DB: test-database
+      MYSQL_DATABASE: 'finalGogogo'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      - "5432:5432"
+      - '3309:3306'
+    expose:
+      - '3309'
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+# Names our volume
 volumes:
-  postgres_data:
+  my-db:
